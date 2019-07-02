@@ -4,4 +4,5 @@
 
 (deftest a-test
   (testing "foo"
-    (is (= "Hello, World!" (foo)))))
+    (with-redefs [println (fn [s] s)]
+      (is (= "Hello, World!" (foo))))))
