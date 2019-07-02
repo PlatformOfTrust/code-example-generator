@@ -1,9 +1,5 @@
 language: clojure
 
-before_install:
-  - java --version
-  - lein -v
-
 install:
   # Install dependencies.
   - lein run
