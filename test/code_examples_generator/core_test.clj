@@ -3,5 +3,5 @@
             [code-examples-generator.core :refer :all]))
 
 (deftest a-test
-  (testing "pass."
-    (is (= 1 1))))
+  (testing "foo"
+    (is (= "Hello, World!" (foo)))))
