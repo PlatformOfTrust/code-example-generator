@@ -1,0 +1,32 @@
+language: clojure
+
+install:
+  # Install dependencies.
+  - lein run
+
+before_script:
+  # Check for outdated project dependencies.
+  # Failing this should not trigger build failure!
+  - lein deps || true;
+
+script:
+  # Run unit tests and generate code coverage report.
+  - lein cloverage
+
+  # Build binary.
+  - lein uberjar
+
+  # Test that binary works.
+  - java -jar target/raml2http.jar
+
+  # TODO Run integration/acceptance tests
+
+after_success:
+  - echo Seems to work!
+
+
+after_script:
+  # Run various code quality tools. Just for information.
+  - lein eastwood
+  - lein kibit
+  - lein bikeshed
