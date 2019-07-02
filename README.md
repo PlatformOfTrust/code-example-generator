@@ -18,8 +18,7 @@ This is a [Clojure][clj] project and requires:
 1. [Java 8 or above][jdk]
 2. [Leiningen 2.0 or above][lein] (OSX users can use `brew install leiningen`).
 
-You can make sure that everything is installed by running 
-`java --version && lein -v`
+You can make sure that everything is installed by running `java --version && lein -v`.
 
 ```
 $ java --version && lein -v
@@ -78,7 +77,7 @@ You might want to...
 - Follow [The Clojure Style Guide][bbatsov] for consistency.
 - Commit and create PRs using [Conventional Commits standard](cnvc).
 - Use [SemVer](semver).
-- Update [Change Log](code-examples-generator/CHANGELOG.md).
+- Update [Change Log](./CHANGELOG.md).
 
 ```
 lein eastwood                           # Linter
@@ -89,14 +88,10 @@ lein ancient                            # Check for outdated dependencies
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](license.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
 
-## Clojure 
-
-If you'd like to get into Clojure then probably one of the best resources to 
-get started at the moment is to start with the free e-book/tutorial
-[Clojure for the Brave and True](braveclojure).
-
+--------------------------------------------------------------------------------
+Copyright © 2019 Platform Of Trust
 
 [RAML-spec]: https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md
 [clj]: https://clojure.org/
