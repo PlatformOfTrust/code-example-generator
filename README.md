@@ -1,5 +1,7 @@
 # Code Example Generator
 
+[![Build Status](https://travis-ci.org/PlatformOfTrust/code-examples-generator.svg?branch=master)](https://travis-ci.org/PlatformOfTrust/code-examples-generator)
+
 The purpose of this project is to create a command line tool that is able to 
 parse Platform of Trust API documentation and examples from [RAML 1.0](RAML-spec) 
 files and generate example HTTP requests in various languages.
