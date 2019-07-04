@@ -1,6 +1,7 @@
 # Code Example Generator
 
 [![Build Status](https://travis-ci.org/PlatformOfTrust/code-examples-generator.svg?branch=master)](https://travis-ci.org/PlatformOfTrust/code-examples-generator)
+[![CHANGELOG.md](https://img.shields.io/badge/-changelog-blue.svg)](CHANGELOG.md)
 
 The purpose of this project is to create a command line tool that is able to 
 parse Platform of Trust API documentation and examples from [RAML 1.0](RAML-spec) 
@@ -39,6 +40,7 @@ TODO! how to use it.
 
 ```
 lein test                               # Run unit tests
+lein test-refesh                        # Run unit tests automatically when files change
 lein cloverage                          # Generate code coverage report
 lein test :integration                  # Run integration tests
 lein test :all                          # Run all the tests
@@ -86,6 +88,7 @@ lein eastwood                           # Linter
 lein kibit                              # Static code analyzer
 lein bikeshed                           # Gives tips for writing better code
 lein ancient                            # Check for outdated dependencies
+lein annoations                         # Display all comment annotations (TODO, FIXME etc.)
 ```
 
 ## License

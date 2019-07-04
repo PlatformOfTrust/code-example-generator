@@ -4,11 +4,6 @@ install:
   # Install dependencies.
   - lein run
 
-before_script:
-  # Check for outdated project dependencies.
-  # Failing this should not trigger build failure!
-  - lein deps || true;
-
 script:
   # Run unit tests and generate code coverage report.
   - lein cloverage
@@ -30,3 +25,9 @@ after_script:
   - lein eastwood
   - lein kibit
   - lein bikeshed
+
+  # Check for outdated project dependencies.
+  - lein deps
+
+  # Display all annotations
+  - lein annotations
