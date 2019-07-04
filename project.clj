@@ -13,11 +13,12 @@
                  [cheshire "5.8.1"]
                  [selmer "1.12.12"]]
 
-  :plugins [[lein-kibit "0.1.6"]
-            [jonase/eastwood "0.3.5"]
-            [lein-ancient "0.6.15"]
-            [lein-cloverage "1.1.1"]
-            [lein-bikeshed "0.5.2"]]
+  :plugins []
+
+  :source-paths ["src"]
+  :test-paths ["test"]
+  :resource-paths ["resources"]
+            
 
   :bikeshed {:long-lines false
              :trailing-whitespace false
@@ -32,4 +33,18 @@
                        :aot :all
                        :uberjar-name "raml2http.jar"
                        :source-paths ["src"]
-                       :resource-paths ["resources"]}})
+                       :resource-paths ["resources"]}
+             :dev {:dependencies [[pjstadig/humane-test-output "0.9.0"]]
+                   :plugins [[lein-kibit "0.1.6"]
+                             [jonase/eastwood "0.3.5"]
+                             [lein-ancient "0.6.15"]
+                             [lein-cloverage "1.1.1"]
+                             [lein-bikeshed "0.5.2"]
+                             [lein-annotations "0.1.0"]
+                             [com.jakemccrary/lein-test-refresh "0.24.1"]]
+                   :injections [(require 'pjstadig.humane-test-output)
+                                (pjstadig.humane-test-output/activate!)]}
+                             
+                             
+             :test [:dev]})
+
