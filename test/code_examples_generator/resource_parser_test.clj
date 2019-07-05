@@ -4,16 +4,16 @@
    [code-examples-generator.resource-parser :refer :all]))
 
 
-(deftest test-coercing-example-to-value
-  (are [f] (= clojure.lang.PersistentArrayMap (type (coerce-example-to-value f)))
+(deftest test-coercing-examples->values
+  (are [f] (= clojure.lang.PersistentArrayMap (type (coerce-examples->values f)))
     {} nil)
-  (is (= (keys (coerce-example-to-value {:X-Pot-1 {} :X-Pot-2 {:X-Pot-3 nil}}))
+  (is (= (keys (coerce-examples->values {:X-Pot-1 {} :X-Pot-2 {:X-Pot-3 nil}}))
          '(:X-Pot-1 :X-Pot-2)))
-  (is (= (keys (coerce-example-to-value {:X-Pot-1 {:example "{:X-Pot-2 {:example 1}}"}}))
+  (is (= (keys (coerce-examples->values {:X-Pot-1 {:example "{:X-Pot-2 {:example 1}}"}}))
          '(:X-Pot-1)))
-  (is (= (vals (coerce-example-to-value {:X-Pot-1 {:example "example1"} :X-Pot-2 {:type "String"}}))
+  (is (= (vals (coerce-examples->values {:X-Pot-1 {:example "example1"} :X-Pot-2 {:type "String"}}))
          '("example1" nil)))
-  (is (= (vals (coerce-example-to-value {:X-Pot-1 {:example "{:X-Pot-2 {:example 1}}"}}))
+  (is (= (vals (coerce-examples->values {:X-Pot-1 {:example "{:X-Pot-2 {:example 1}}"}}))
          '("{:X-Pot-2 {:example 1}}"))))
 
 
@@ -28,9 +28,6 @@
                          "pot" false}))))
 
 
-;; TODO requests
-;; TODO methods
-;; (deftest test-
-;;   (is (true? true)))
+;; (deftest test-get-methods)
 
-
+;; (deftest test-get-requests)
