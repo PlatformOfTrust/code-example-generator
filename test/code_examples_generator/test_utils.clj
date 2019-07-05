@@ -3,12 +3,14 @@
   (:require [clojure.java.io :as io])
   (:import [java.nio.file Files]
            [java.nio.file.attribute FileAttribute]))
-  
+
 
 (defn create-temp-file
-  "Create temporary file and return it's path."
-  []
-  (java.io.File/createTempFile "Test" ".tmp"))
+  "Create temporary file with optional suffix `s`."
+  ([]
+   (create-temp-file ".tmp"))
+  ([s]
+   (java.io.File/createTempFile "Test" s)))
   
 (defn create-temp-dir
   "Create temporary directory and return it's path."
