@@ -1,7 +1,9 @@
 (ns code-examples-generator.resource-parser-test
   (:require
    [clojure.test :refer :all]
-   [code-examples-generator.resource-parser :refer :all]))
+   [code-examples-generator.resource-parser :refer :all]
+   [code-examples-generator.test-utils :as u]
+   [ring.util.codec :refer [form-encode]]))
 
 
 (deftest test-coercing-examples->values
@@ -19,7 +21,6 @@
     (is (= (vals (coerce-examples->values {:X-Pot-1 {:example "{:X-Pot-2 {:example 1}}"}}))
            '("{:X-Pot-2 {:example 1}}")))))
 
-
 (deftest test-get-resources
   (testing "valid resource keys are only strings prefixed with forward slash `/`"
     (is (= '(["/pot" true] ["/pot/{potId}" {:data "is good!"}])
@@ -30,3 +31,52 @@
                            "/pot" true
                            "/pot/{potId}" {:data "is good!"}
                            "pot" false})))))
+
+(deftest test-get-ring-request
+  (testing "ring-request keys"
+    (with-redefs [coerce-examples->values (constantly "stub")]
+      (is (= '(:request-method
+               :server-name
+               :scheme
+               :uri
+               :query-string
+               :body
+               :headers)
+             (keys (get-ring-request {} :get "pot.org" "https" "/"))))))
+  (testing "no empty or nil values"
+    (is (= '(:request-method :uri :query-string)
+           (keys (get-ring-request {:queryParameters {:test {:example "ok"}}
+                                    :body {}}
+                                   :get nil "" "/")))))
+  (testing "query parameters should get url encoded"
+    (with-redefs [coerce-examples->values (fn [m] m)]                                  
+      (let [q {:test "ok"}
+            r (get-ring-request {:queryParameters q} "" "" "" "")]
+        (is (= (form-encode q) (:query-string r)))))))
+;; TODO also test body and headers!
+
+(deftest test-get-methods
+  (testing "always return a map"
+    (are [f] (= clojure.lang.LazySeq (type (get-methods f {} "")))
+      {} nil))
+  (testing "return map structure"
+    (let [request (get-methods {:get nil :post nil} {} "")
+          response-keys '(:ring-request  :desc)]
+      (is (= response-keys (keys (first request))))
+      (is (= response-keys (keys (second request))))))
+  (testing "valid methods are: GET, PATCH, PUT, POST, DELETE and OPTIONS and HEAD"
+    (let [ok '(:get :patch :put :post :delete :options :head)
+          all (conj ok "get" "" nil "/test")
+          m (get-methods (u/create-map all) {:host "" :scheme ""}  "pot.org")]
+      (is (= (sort ok)
+             (sort (map #(:request-method (:ring-request %)) m)))))))
+
+
+;; TODO No point to further unit test that. Write integration/component tests that use actual raml maps!
+(deftest test-get-requests
+  (testing "always returns a sequence"
+    (are [f] (= clojure.lang.LazySeq (type (get-requests f {})))
+      {} nil)
+    (are [f s] (= clojure.lang.LazySeq (type (get-requests f {} s)))
+      {} ""
+      nil "pot.org")))

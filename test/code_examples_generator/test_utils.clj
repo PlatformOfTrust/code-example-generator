@@ -31,3 +31,12 @@
   "Return random string (that could be used for testing hypothetical file locations)."
   []
   (->> uuid .toString (str "./")))
+
+(defn create-map
+  "Create a map with a key for each item in sequence `seq` that 
+   has an optional value f (`nil` by default)."
+  ([seq]
+   (create-map seq nil))
+  ([seq f]
+   (into {} (map (fn [kw _] {kw f}) seq (range)))))
+
