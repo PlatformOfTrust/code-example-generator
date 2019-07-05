@@ -2,6 +2,7 @@
   "Helper methods related to reading and writing files."
   (:require 
    [clojure.string :as str]
+   [clojure.pprint :refer write]
    [clojure.java.io :as io]))
 
 
@@ -40,5 +41,5 @@
   [dest m]
   (let [path (str/join "/" (list dest "debug.edn"))]
     (io/make-parents path)
-    (spit path (clojure.pprint/write m :stream nil))))
+    (spit path (write m :stream nil))))
       
