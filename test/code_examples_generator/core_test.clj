@@ -8,21 +8,24 @@
 
 
 (deftest test-help
-  (are [args] (= (validate-args args) (:summary (parse-opts args cli-options)))
-    nil '() '("-h") '("--help")))
+  (testing "displaying help"
+    (are [args] (= (validate-args args) (:summary (parse-opts args cli-options)))
+      nil '() '("-h") '("--help"))))
 
 (deftest test-errors
-  (are [args] (str/starts-with? (validate-args args) "Unknown option:")
-    '("--blaah")))
+  (testing "passing incorrect parameters should result in error message"
+    (are [args] (str/starts-with? (validate-args args) "Unknown option:")
+      '("--blaah"))))
 
 
 (deftest test-version
-  (are [args] (= "v0.1.0" (validate-args args))
-    '("-v") '("--version") '("-v" "--help")))
+  (testing "version should be displayed"
+    (are [args] (= "v0.1.0" (validate-args args))
+      '("-v") '("--version") '("-v" "--help"))))
 
 
 (deftest test-main-method
-  (testing "Main method outputs the result of argument validation."
+  (testing "outputs the result of argument validation"
     (with-redefs
       [println (fn [s] s)
        validate-args (fn [a] "MOCK_RESPONSE")]

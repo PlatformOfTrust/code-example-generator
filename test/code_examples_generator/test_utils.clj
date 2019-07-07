@@ -3,12 +3,14 @@
   (:require [clojure.java.io :as io])
   (:import [java.nio.file Files]
            [java.nio.file.attribute FileAttribute]))
-  
+
 
 (defn create-temp-file
-  "Create temporary file and return it's path."
-  []
-  (java.io.File/createTempFile "Test" ".tmp"))
+  "Create temporary file with optional suffix `s`."
+  ([]
+   (create-temp-file ".tmp"))
+  ([s]
+   (java.io.File/createTempFile "Test" s)))
   
 (defn create-temp-dir
   "Create temporary directory and return it's path."
@@ -31,3 +33,12 @@
   "Return random string (that could be used for testing hypothetical file locations)."
   []
   (->> uuid .toString (str "./")))
+
+(defn create-map
+  "Create a map with a key for each item in sequence `seq` that 
+   has an optional value f (`nil` by default)."
+  ([seq]
+   (create-map seq nil))
+  ([seq f]
+   (into {} (map (fn [kw _] {kw f}) seq (range)))))
+

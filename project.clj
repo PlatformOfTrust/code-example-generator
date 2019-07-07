@@ -24,7 +24,7 @@
              :trailing-whitespace false
              :blank-lines false}
 
-  :cloverage {:fail-threshold 50
+  :cloverage {#_:fail-threshold #_50
               :low-watermark 70
               :high-watermark 90}
 

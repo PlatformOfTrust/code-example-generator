@@ -2,23 +2,33 @@
   (:require
    [clojure.tools.cli :refer [parse-opts]]
    [clojure.string :as str]
+   [selmer.parser :as selmer]
+   [raml-clj-parser.core :as raml]
+   [ring-curl.core :as ring-curl]
+   [code-examples-generator.fs-utils :as fs]
+   [code-examples-generator.resource-parser :refer [get-requests]]
    [code-examples-generator.validators :refer :all])
   (:gen-class)) 
 
-
-;; (defn format-summary
-;;   "Split tools.deps.cli summary to "
-;;   [s]
-;;   (str/join (str/split s (re-pattern "\n")) \newline))
-
-
+;; TODO cover this w/ integration tests
 (defn RAML->HTTP-examples
-  [s]
+  "Read RAML files from `source`, find all unique HTTP requests and save examples 
+   in different languages to `dest` folder defined in `cli-args`."
+  [{:keys [source dest sha] :as cli-args}]
+  (doseq [file (fs/get-RAML-files source)]
+    (doseq [{:keys [ring-request desc]}
+            (get-requests (raml/read-raml file) cli-args)]
+      (let [examples-dir (fs/get-dest cli-args file ring-request)
+            curl (ring-curl/to-curl ring-request)
+            context-map (conj ring-request {:curl curl :desc desc})]
+        (fs/spit-raml-map examples-dir (raml/read-raml file))
+        (doseq [template-path (fs/get-templates)]
+          (let [code-example-path(str examples-dir "/" template-path)
+                content (selmer/render-file (str "templates/" template-path) context-map)]
+            (spit code-example-path content))))))
   "raml->HTTP")
 
-
 ;; TODO add test that cli opts must not use any of the ring-request params!?
-;; TODO break up into cli-validators for easier testing?
 (def cli-options
   "Specs for CLI options according to https://github.com/clojure/tools.cli"
   [["-s" "--source PATH" "Required RAML file or a directory that contains RAML files."
@@ -34,13 +44,13 @@
    ;; TODO enable that
    ;; ["-t" "--templates PATH" "Optional path for custom templates directory. Can be used
    ;;                           to override built in templates."]
-   ["-c" "--sha SHA1" "Optional git commit hash to show in footer of code examples."]
+   ;; ["-c" "--sha SHA1" "Optional git commit hash to show in footer of code examples."]
    ["-h" "--help"]
    ["-v" "--version"]])
 
-
 ;; TODO report RAML parser linter!?
 ;; cannot output files. Proper error!
+;; TODO non-fixed version!
 (defn validate-args
   "Validate command line arguments and trigger either example generation 
    or show help and/or errors."
@@ -51,6 +61,5 @@
       (not (nil? errors)) (str/join \newline errors)
       (or (:help options) (empty? (:source options))) summary 
       :else (RAML->HTTP-examples options))))
-  
 
 (defn -main [& args] (println (validate-args args)))
