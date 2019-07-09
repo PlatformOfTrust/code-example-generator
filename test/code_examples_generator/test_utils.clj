@@ -41,4 +41,3 @@
    (create-map seq nil))
   ([seq f]
    (into {} (map (fn [kw _] {kw f}) seq (range)))))
-
