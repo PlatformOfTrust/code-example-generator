@@ -1,4 +1,4 @@
-# Code Example Generator
+# Code Examples Generator
 
 [![Build Status](https://travis-ci.org/PlatformOfTrust/code-examples-generator.svg?branch=master)](https://travis-ci.org/PlatformOfTrust/code-examples-generator)
 [![CHANGELOG.md](https://img.shields.io/badge/-changelog-blue.svg)](CHANGELOG.md)
@@ -7,7 +7,7 @@ The purpose of this project is to create a command line tool that is able to
 parse Platform of Trust API documentation and examples from [RAML 1.0](RAML-spec) 
 files and generate example HTTP requests in various languages.
 
-For instructions how to use this tool see TODO!
+For instructions how to use this tool see [USER GUIDE][guide].
 
 ## Getting Started
 
@@ -33,46 +33,63 @@ Leiningen 2.9.1 on Java 11.0.2 Java HotSpot(TM) 64-Bit Server VM
 
 ### Running the application
 
-`lein run` will run the code example generator (and install dependencies). See 
-TODO! how to use it.
+`lein run` will run the code example generator (and install dependencies). Without 
+passing any extra parameters it will display command line help.
 
-## Running the tests
+```
+ $lein run
+  -s, --source PATH                    Required RAML file or a directory that contains RAML files.
+  -d, --dest PATH      ./pot-examples  Optional Directory for generated code examples.
+  -H, --host HOST      pot.org         Required URI host e.g. `pot.org`.
+  -S, --scheme SCHEME  https           Optional URI scheme (`https` or `http`).
+  -h, --help
+  -v, --version
+```
+
+See [user guide][guide] for more details how to use it.
+
+## Testing
 
 ```
 lein test                               # Run unit tests
 lein test-refesh                        # Run unit tests automatically when files change
 lein cloverage                          # Generate code coverage report
-lein test :integration                  # Run integration tests
-lein test :all                          # Run all the tests
 ```
 
-NB! This project is expected to have > 90% code coverage for unit tests and it 
-has been set as a criteria for successful builds in CI.
+NB! This project is expected to have > 50% code coverage for unit tests and it 
+has been set as a criteria for successful builds in CI. You can change it in 
+[project.clj](project.clj).
 
-### Integration tests
+```
+  :cloverage {:fail-threshold 50
+              :low-watermark 70
+              :high-watermark 90}
+```
 
-This tool will generate HTTP request examples according to provided HTTP 
-requests templates and API documenation in RAML. See TODO! how it works. Unit 
-tests should be sufficient to make sure that generate examples have been 
-created correctly but they cannot guarantee that requests will actually work in 
-their respetive environments due to errors in either documentation or templates.
+<!-- ### Integration tests -->
 
-Integration tests will take the generated HTTP request examples and run them 
-against [Mockbin](mockbin) HTTP endpoints to make sure that requests work in 
-their respective environments.
+<!-- This tool will generate HTTP request examples according to provided (HTTP  -->
+<!-- request) templates and API documenation in RAML. Unit tests should be  -->
+<!-- sufficient to make sure that generate examples have been created correctly but  -->
+<!-- they cannot guarantee that requests will actually work in their respetive  -->
+<!-- environments due to errors in either documentation or templates. -->
 
-TODO! More details about setup and running.
+<!-- Integration tests will take the generated HTTP request examples and run them  -->
+<!-- against [Mockbin](mockbin) HTTP endpoints to make sure that requests work in  -->
+<!-- their respective environments. -->
 
-Passing integration tests is a requirement for successful builds in CI!
+<!-- TODO! More details about setup and running. -->
+
+<!-- Passing integration tests is a requirement for successful builds in CI! -->
 
 ## Deployment
 
 Each commit to master branch will trigger a new build process that will build a 
 binary (jar file e.g. `raml2http-<branch_name>.jar`) that will be uploaded to 
-TODO! See TODO! how to download and use it.
+TODO! See [user guide][guide] how to download and use it.
 
-TODO! Maybe add tagging which creates raml2http-1.0.2.jar etc. It would be nice 
-but needs time to test and fiddle with CI.
+<!-- TODO! Maybe add tagging which creates raml2http-1.0.2.jar etc. It would be nice  -->
+<!-- but needs time to test and fiddle with CI. -->
 
 ## Contributing
 
@@ -88,7 +105,7 @@ lein eastwood                           # Linter
 lein kibit                              # Static code analyzer
 lein bikeshed                           # Gives tips for writing better code
 lein ancient                            # Check for outdated dependencies
-lein annoations                         # Display all comment annotations (TODO, FIXME etc.)
+lein annotations                        # Display all comment annotations (TODO, FIXME etc.)
 ```
 
 ## License
@@ -106,4 +123,4 @@ Copyright © 2019 Platform Of Trust
 [bbatsov]: https://github.com/bbatsov/clojure-style-guide
 [semver]: http://semver.org/
 [cnvc]: https://www.conventionalcommits.org/
-[braveclojure]: https://www.braveclojure.com/clojure-for-the-brave-and-true/
+[guide]: ./doc/intro.md
