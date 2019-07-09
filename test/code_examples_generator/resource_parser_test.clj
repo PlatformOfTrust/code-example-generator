@@ -1,6 +1,7 @@
 (ns code-examples-generator.resource-parser-test
   (:require
    [clojure.test :refer :all]
+   [clojure.edn :as edn]
    [code-examples-generator.resource-parser :refer :all]
    [code-examples-generator.test-utils :as u]
    [ring.util.codec :refer [form-encode]]))
@@ -48,9 +49,17 @@
            (keys (get-ring-request {:queryParameters {:test {:example "ok"}}
                                     :body {}}
                                    :get nil "" "/")))))
+  (testing "headers exist"
+    (with-redefs [coerce-examples->values (fn [m] m)]
+      (let [h {:test "headers"}]
+        (is (= h (:headers (get-ring-request {:headers h} "" "" "" "")))))))
+  (testing "body parameters exist"
+    (with-redefs [coerce-examples->values (fn [m] m)]
+      (let [b {:test "body"}]
+        (is (= b (:body (get-ring-request {:body b} "" "" "" "")))))))
   (testing "query parameters should get url encoded"
     (with-redefs [coerce-examples->values (fn [m] m)]                                  
-      (let [q {:test "ok"}
+      (let [q {:test "query"}
             r (get-ring-request {:queryParameters q} "" "" "" "")]
         (is (= (form-encode q) (:query-string r)))))))
 ;; TODO also test body and headers!
@@ -71,12 +80,27 @@
       (is (= (sort ok)
              (sort (map #(:request-method (:ring-request %)) m)))))))
 
-
-;; TODO No point to further unit test that. Write integration/component tests that use actual raml maps!
 (deftest test-get-requests
   (testing "always returns a sequence"
     (are [f] (= clojure.lang.LazySeq (type (get-requests f {})))
       {} nil)
     (are [f s] (= clojure.lang.LazySeq (type (get-requests f {} s)))
       {} ""
-      nil "pot.org")))
+      nil "pot.org"))
+  (testing "message-api"
+    (let [requests (->> (get-requests
+                         (edn/read-string
+                          (slurp "test-resources/message-api.edn"))
+                         {:host "" :scheme ""})
+                        (map #(:ring-request %)))]
+          
+      (is (= 6 (count requests)))
+      (is (= '(:post :get :put :delete :post :get)
+             (map #(:request-method %) requests)))
+      (is (= '("/messages/{version}"
+               "/messages/{version}/{id}"
+               "/messages/{version}/{id}"
+               "/messages/{version}/{id}"
+               "/messages/{version}/{id}/read"
+               "/messages/{version}/{toIdentity}/list")
+             (map #(:uri %) requests))))))

@@ -1,0 +1,155 @@
+{:raml-version "1.0",
+ :title "Message",
+ :version "v1",
+ :baseUri
+ {:uri "https://api-sandbox.oftrust.net",
+  :raml-clj-parser.reader/uri-parameters []},
+ :mediaType "application/json",
+ :description
+ "The message API provides means to create/send messages to identities.\nYou can send a message to any identity, e.g. a housing company, where all\nusers who has access to the housing company identity and its messages can\nread the message.\n\nThe message requires a `\"to\"`-identity, the ID of the identity to which\nthe message applies to.\nA message `subject` and its `content` should be added as well.\n\nThe `cc` is a list of user IDs to whom the message can be CC'd to.\nA notification about the message will be sent to these users.\n",
+ :types
+ {:message
+  {:type "object",
+   :properties
+   {:toIdentity
+    {:description
+     "The \"to\" identity ID to which the message is sent to.",
+     :type "string",
+     :example "d36c4cd0-26c9-446e-a93f-0a90029f3a7f"},
+    :subject
+    {:description "The message subject.",
+     :type "string",
+     :example "Go to the grocery store"},
+    :content
+    {:description "The content of the message.",
+     :type "string",
+     :example "Remember to buy milk!"},
+    :cc?
+    {:description "List of IDs to CC the message to.",
+     :type "array",
+     :example
+     "[\n  \"323bde80-4cc2-472e-bb77-e6a3e95a1253\",\n  \"0827e9c3-9664-479f-b0ec-956a35d72e4b\"\n]\n"}}}},
+ "/messages/{version}"
+ {:uri "/messages/{version}",
+  :raml-clj-parser.reader/uri-parameters ["version"],
+  :description
+  "Manage messages of identities. A message can be sent to any identity the user\nhas access to.\n",
+  :post
+  {:headers
+   {:Authorization
+    "description: The Authorization header, MUST be `Bearer {{access_token}}`\ntype: string\nexample: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6bnVsbCwiZXhwIjoxNTQ1MTQzMzY1LCJzdWIiOiIwYzMyYjQ3MC03ZmRmLTQ5MWYtYjA1NS04NmIyMzYxZjljZTkiLCJpc3MiOm51bGwsImF1ZCI6IjdjMDM3MjNjLWJiZWYtNDlkMS1hNmFiLTk2OGYzOGNlODRlNiIsImlhdCI6MTU0NTA1Njk2NS4wODE2Njh9.of5sEZBpzWHqjLd2LPsQZXfS1uQWLOeqdvFtqZtq8BwnCllpebX5MyjSaahOBLXBqyAhPxafEETfMZtyAe1-9P-6imvOTv8JDjw5AbNZelPAAflZHX89AcFCJpKuI603ZqywTTyIqdijVZArkNdEfGeQhJXoSmcDLElUnixw5rJF7FKdtCGjIP4aKazRxfn2DJOOhA1BazCR3xXV42OCgMsdiRYEJ2EhcUdlmA7OT-NjAgzOgS12zfVVEM9swwIVPPc27ewd4rmStJSUYHD2hHaRXQKmJqamJfA5W-vxEJH9G6UW3wwM--ROwYHMHcDfN2HIT-AqojMqitNHZr_AlrTQCpcv-BMA2uwg7DT8MMJ0bLrrdst7Eg_ha4U8iz4CgCTlu9MJEVFUzzLMTnMI8Cc74milBJ6xpHsgJItYjC1e4dVCs_5xxLfy44npg21TOX4Uds4uwLLOhy-gnBAVRzzmCD6nkGmAnHc7Kvck_uw7WHMUeHyMfa1LZoEQhOu0AenymKoHs6gH5anCUwBRAUUdTxXIAwDLod1Q-9Hz3_NBTqiV3Nh1Kn-WswWnA0GPIdKLHt0oI-PAZ0Y1CfL9otucvZtL7UR2qXZjEq8lSX0DVlpJX9ma7RFhcBu4evrTkKSfrdQVitXWiE0q1sSh1CeqlVtnVg6dfGuMKaoY9sA\n"},
+   :description "Create a new message",
+   :body
+   {:type "message",
+    :example
+    "{\n  \"toIdentity\": \"<to identity ID>\",\n  \"subject\": \"<message subject>\",\n  \"content\": \"<message content>\",\n  \"cc\": [\n    \"<This list should contain a list of strings with user IDs>\"\n  ]\n}"},
+   :responses
+   {"201"
+    {:body
+     {:properties
+      "'@context':\n  description: The context URL\n  type: string\n  example: https://example.com/contexts/message.jsonld\n'@type':\n  description: The JSON-LD type of this object\n  type: string\n  example: Message\ntoIdentity:\n  description: The \"to\" identity ID to which the message is sent to.\n  type: string\n  example: d36c4cd0-26c9-446e-a93f-0a90029f3a7f\nsubject:\n  description: The message subject.\n  type: string\n  example: Go to the grocery store\ncontent:\n  description: The content of the message.\n  type: string\n  example: Remember to buy milk!\ncc?:\n  description: This list should contain a list of strings with user IDs.\n  type: array\n  example: |\n    [\n      \"323bde80-4cc2-472e-bb77-e6a3e95a1253\",\n      \"0827e9c3-9664-479f-b0ec-956a35d72e4b\"\n    ]\ncreatedBy:\n  description: The user ID of the user who created the message\n  type: string\n  example: 5ae98ee4-ef1b-4f89-b03d-130ceffb876a\ncreatedAt:\n  description: RFC3339 datetime when the message was created\n  type: datetime\n  example: 2018-02-28T16:41:41.090Z\nupdatedAt:\n  description: RFC3339 datetime when the message was updated\n  type: datetime\n  example: 2018-02-28T16:41:41.090Z\n",
+      :example
+      "{\n  \"@context\": \"<URL to message context>\",\n  \"@type\": \"Message\",\n  \"toIdentity\": \"<to identity ID>\",\n  \"subject\": \"<message subject>\",\n  \"content\": \"<message content>\",\n  \"cc\": [\n    \"<list of identity IDs>\"\n  ],\n  \"createdAt\": \"2019-01-10T12:00:00Z\",\n  \"updatedAt\": \"2019-01-10T12:00:00Z\",\n  \"createdBy\": \"<user ID who created the message>\"\n}"}},
+    "422"
+    {:body
+     {:example
+      "{\n  \"error\": {\n    \"status\": 422,\n    \"message\": \"Could not create message.\"\n  }\n}\n"}}}},
+  "/{id}"
+  {:uri "/{id}",
+   :raml-clj-parser.reader/uri-parameters ["id"],
+   :description "Read, update and delete messages of an identity.",
+   :uriParameters
+   {:id
+    {:description "The ID of the message",
+     :type "string",
+     :example "2584bdd7-1cb2-48ed-a106-2a1b817cf909"}},
+   :get
+   {:headers
+    {:Authorization
+     "description: The Authorization header, MUST be `Bearer {{access_token}}`\ntype: string\nexample: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6bnVsbCwiZXhwIjoxNTQ1MTQzMzY1LCJzdWIiOiIwYzMyYjQ3MC03ZmRmLTQ5MWYtYjA1NS04NmIyMzYxZjljZTkiLCJpc3MiOm51bGwsImF1ZCI6IjdjMDM3MjNjLWJiZWYtNDlkMS1hNmFiLTk2OGYzOGNlODRlNiIsImlhdCI6MTU0NTA1Njk2NS4wODE2Njh9.of5sEZBpzWHqjLd2LPsQZXfS1uQWLOeqdvFtqZtq8BwnCllpebX5MyjSaahOBLXBqyAhPxafEETfMZtyAe1-9P-6imvOTv8JDjw5AbNZelPAAflZHX89AcFCJpKuI603ZqywTTyIqdijVZArkNdEfGeQhJXoSmcDLElUnixw5rJF7FKdtCGjIP4aKazRxfn2DJOOhA1BazCR3xXV42OCgMsdiRYEJ2EhcUdlmA7OT-NjAgzOgS12zfVVEM9swwIVPPc27ewd4rmStJSUYHD2hHaRXQKmJqamJfA5W-vxEJH9G6UW3wwM--ROwYHMHcDfN2HIT-AqojMqitNHZr_AlrTQCpcv-BMA2uwg7DT8MMJ0bLrrdst7Eg_ha4U8iz4CgCTlu9MJEVFUzzLMTnMI8Cc74milBJ6xpHsgJItYjC1e4dVCs_5xxLfy44npg21TOX4Uds4uwLLOhy-gnBAVRzzmCD6nkGmAnHc7Kvck_uw7WHMUeHyMfa1LZoEQhOu0AenymKoHs6gH5anCUwBRAUUdTxXIAwDLod1Q-9Hz3_NBTqiV3Nh1Kn-WswWnA0GPIdKLHt0oI-PAZ0Y1CfL9otucvZtL7UR2qXZjEq8lSX0DVlpJX9ma7RFhcBu4evrTkKSfrdQVitXWiE0q1sSh1CeqlVtnVg6dfGuMKaoY9sA\n"},
+    :description "Read one message by id",
+    :responses
+    {"200"
+     {:body
+      {:properties
+       "'@context':\n  description: The context URL\n  type: string\n  example: https://example.com/contexts/message.jsonld\n'@type':\n  description: The JSON-LD type of this object\n  type: string\n  example: Message\ntoIdentity:\n  description: The \"to\" identity ID to which the message is sent to.\n  type: string\n  example: d36c4cd0-26c9-446e-a93f-0a90029f3a7f\nsubject:\n  description: The message subject.\n  type: string\n  example: Go to the grocery store\ncontent:\n  description: The content of the message.\n  type: string\n  example: Remember to buy milk!\ncc?:\n  description: This list should contain a list of strings with user IDs.\n  type: array\n  example: |\n    [\n      \"323bde80-4cc2-472e-bb77-e6a3e95a1253\",\n      \"0827e9c3-9664-479f-b0ec-956a35d72e4b\"\n    ]\ncreatedBy:\n  description: The user ID of the user who created the message\n  type: string\n  example: 5ae98ee4-ef1b-4f89-b03d-130ceffb876a\ncreatedAt:\n  description: RFC3339 datetime when the message was created\n  type: datetime\n  example: 2018-02-28T16:41:41.090Z\nupdatedAt:\n  description: RFC3339 datetime when the message was updated\n  type: datetime\n  example: 2018-02-28T16:41:41.090Z\n",
+       :example
+       "{\n  \"@context\": \"<URL to message context>\",\n  \"@type\": \"Message\",\n  \"toIdentity\": \"<to identity ID>\",\n  \"subject\": \"<message subject>\",\n  \"content\": \"<message content>\",\n  \"cc\": [\n    \"<list of identity IDs>\"\n  ],\n  \"createdAt\": \"2019-01-10T12:00:00Z\",\n  \"updatedAt\": \"2019-01-10T12:00:00Z\",\n  \"createdBy\": \"<user ID who created the message>\"\n}"}},
+     "404"
+     {:body
+      {:example
+       "{\n  \"error\": {\n    \"status\": 404,\n    \"message\": \"Message not found.\"\n  }\n}"}}}},
+   :put
+   {:headers
+    {:Authorization
+     "description: The Authorization header, MUST be `Bearer {{access_token}}`\ntype: string\nexample: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6bnVsbCwiZXhwIjoxNTQ1MTQzMzY1LCJzdWIiOiIwYzMyYjQ3MC03ZmRmLTQ5MWYtYjA1NS04NmIyMzYxZjljZTkiLCJpc3MiOm51bGwsImF1ZCI6IjdjMDM3MjNjLWJiZWYtNDlkMS1hNmFiLTk2OGYzOGNlODRlNiIsImlhdCI6MTU0NTA1Njk2NS4wODE2Njh9.of5sEZBpzWHqjLd2LPsQZXfS1uQWLOeqdvFtqZtq8BwnCllpebX5MyjSaahOBLXBqyAhPxafEETfMZtyAe1-9P-6imvOTv8JDjw5AbNZelPAAflZHX89AcFCJpKuI603ZqywTTyIqdijVZArkNdEfGeQhJXoSmcDLElUnixw5rJF7FKdtCGjIP4aKazRxfn2DJOOhA1BazCR3xXV42OCgMsdiRYEJ2EhcUdlmA7OT-NjAgzOgS12zfVVEM9swwIVPPc27ewd4rmStJSUYHD2hHaRXQKmJqamJfA5W-vxEJH9G6UW3wwM--ROwYHMHcDfN2HIT-AqojMqitNHZr_AlrTQCpcv-BMA2uwg7DT8MMJ0bLrrdst7Eg_ha4U8iz4CgCTlu9MJEVFUzzLMTnMI8Cc74milBJ6xpHsgJItYjC1e4dVCs_5xxLfy44npg21TOX4Uds4uwLLOhy-gnBAVRzzmCD6nkGmAnHc7Kvck_uw7WHMUeHyMfa1LZoEQhOu0AenymKoHs6gH5anCUwBRAUUdTxXIAwDLod1Q-9Hz3_NBTqiV3Nh1Kn-WswWnA0GPIdKLHt0oI-PAZ0Y1CfL9otucvZtL7UR2qXZjEq8lSX0DVlpJX9ma7RFhcBu4evrTkKSfrdQVitXWiE0q1sSh1CeqlVtnVg6dfGuMKaoY9sA\n"},
+    :description "Update a message by id",
+    :body
+    {:type "message",
+     :example
+     "{\n  \"subject\": \"<message subject>\",\n  \"content\": \"<message content>\"\n}"},
+    :responses
+    {"200"
+     {:body
+      {:properties
+       "'@context':\n  description: The context URL\n  type: string\n  example: https://example.com/contexts/message.jsonld\n'@type':\n  description: The JSON-LD type of this object\n  type: string\n  example: Message\ntoIdentity:\n  description: The \"to\" identity ID to which the message is sent to.\n  type: string\n  example: d36c4cd0-26c9-446e-a93f-0a90029f3a7f\nsubject:\n  description: The message subject.\n  type: string\n  example: Go to the grocery store\ncontent:\n  description: The content of the message.\n  type: string\n  example: Remember to buy milk!\ncc?:\n  description: This list should contain a list of strings with user IDs.\n  type: array\n  example: |\n    [\n      \"323bde80-4cc2-472e-bb77-e6a3e95a1253\",\n      \"0827e9c3-9664-479f-b0ec-956a35d72e4b\"\n    ]\ncreatedBy:\n  description: The user ID of the user who created the message\n  type: string\n  example: 5ae98ee4-ef1b-4f89-b03d-130ceffb876a\ncreatedAt:\n  description: RFC3339 datetime when the message was created\n  type: datetime\n  example: 2018-02-28T16:41:41.090Z\nupdatedAt:\n  description: RFC3339 datetime when the message was updated\n  type: datetime\n  example: 2018-02-28T16:41:41.090Z\n",
+       :example
+       "{\n  \"@context\": \"<URL to message context>\",\n  \"@type\": \"Message\",\n  \"toIdentity\": \"<to identity ID>\",\n  \"subject\": \"<message subject>\",\n  \"content\": \"<message content>\",\n  \"cc\": [\n    \"<list of identity IDs>\"\n  ],\n  \"createdAt\": \"2019-01-10T12:00:00Z\",\n  \"updatedAt\": \"2019-01-10T12:00:00Z\",\n  \"createdBy\": \"<user ID who created the message>\"\n}"}},
+     "404"
+     {:body
+      {:example
+       "{\n  \"error\": {\n    \"status\": 404,\n    \"message\": \"Message not found.\"\n  }\n}"}},
+     "422"
+     {:body
+      {:example
+       "{\n  \"error\": {\n    \"status\": 422,\n    \"message\": \"Could not update message.\"\n  }\n}\n"}}}},
+   :delete
+   {:headers
+    {:Authorization
+     "description: The Authorization header, MUST be `Bearer {{access_token}}`\ntype: string\nexample: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6bnVsbCwiZXhwIjoxNTQ1MTQzMzY1LCJzdWIiOiIwYzMyYjQ3MC03ZmRmLTQ5MWYtYjA1NS04NmIyMzYxZjljZTkiLCJpc3MiOm51bGwsImF1ZCI6IjdjMDM3MjNjLWJiZWYtNDlkMS1hNmFiLTk2OGYzOGNlODRlNiIsImlhdCI6MTU0NTA1Njk2NS4wODE2Njh9.of5sEZBpzWHqjLd2LPsQZXfS1uQWLOeqdvFtqZtq8BwnCllpebX5MyjSaahOBLXBqyAhPxafEETfMZtyAe1-9P-6imvOTv8JDjw5AbNZelPAAflZHX89AcFCJpKuI603ZqywTTyIqdijVZArkNdEfGeQhJXoSmcDLElUnixw5rJF7FKdtCGjIP4aKazRxfn2DJOOhA1BazCR3xXV42OCgMsdiRYEJ2EhcUdlmA7OT-NjAgzOgS12zfVVEM9swwIVPPc27ewd4rmStJSUYHD2hHaRXQKmJqamJfA5W-vxEJH9G6UW3wwM--ROwYHMHcDfN2HIT-AqojMqitNHZr_AlrTQCpcv-BMA2uwg7DT8MMJ0bLrrdst7Eg_ha4U8iz4CgCTlu9MJEVFUzzLMTnMI8Cc74milBJ6xpHsgJItYjC1e4dVCs_5xxLfy44npg21TOX4Uds4uwLLOhy-gnBAVRzzmCD6nkGmAnHc7Kvck_uw7WHMUeHyMfa1LZoEQhOu0AenymKoHs6gH5anCUwBRAUUdTxXIAwDLod1Q-9Hz3_NBTqiV3Nh1Kn-WswWnA0GPIdKLHt0oI-PAZ0Y1CfL9otucvZtL7UR2qXZjEq8lSX0DVlpJX9ma7RFhcBu4evrTkKSfrdQVitXWiE0q1sSh1CeqlVtnVg6dfGuMKaoY9sA\n"},
+    :description "Delete a message by id",
+    :responses
+    {"204" {:body {:example {}}},
+     "404"
+     {:body
+      {:example
+       "{\n  \"error\": {\n    \"status\": 404,\n    \"message\": \"Message not found.\"\n  }\n}"}}}},
+   "/read"
+   {:uri "/read",
+    :raml-clj-parser.reader/uri-parameters [],
+    :post
+    {:headers
+     {:Authorization
+      "description: The Authorization header, MUST be `Bearer {{access_token}}`\ntype: string\nexample: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6bnVsbCwiZXhwIjoxNTQ1MTQzMzY1LCJzdWIiOiIwYzMyYjQ3MC03ZmRmLTQ5MWYtYjA1NS04NmIyMzYxZjljZTkiLCJpc3MiOm51bGwsImF1ZCI6IjdjMDM3MjNjLWJiZWYtNDlkMS1hNmFiLTk2OGYzOGNlODRlNiIsImlhdCI6MTU0NTA1Njk2NS4wODE2Njh9.of5sEZBpzWHqjLd2LPsQZXfS1uQWLOeqdvFtqZtq8BwnCllpebX5MyjSaahOBLXBqyAhPxafEETfMZtyAe1-9P-6imvOTv8JDjw5AbNZelPAAflZHX89AcFCJpKuI603ZqywTTyIqdijVZArkNdEfGeQhJXoSmcDLElUnixw5rJF7FKdtCGjIP4aKazRxfn2DJOOhA1BazCR3xXV42OCgMsdiRYEJ2EhcUdlmA7OT-NjAgzOgS12zfVVEM9swwIVPPc27ewd4rmStJSUYHD2hHaRXQKmJqamJfA5W-vxEJH9G6UW3wwM--ROwYHMHcDfN2HIT-AqojMqitNHZr_AlrTQCpcv-BMA2uwg7DT8MMJ0bLrrdst7Eg_ha4U8iz4CgCTlu9MJEVFUzzLMTnMI8Cc74milBJ6xpHsgJItYjC1e4dVCs_5xxLfy44npg21TOX4Uds4uwLLOhy-gnBAVRzzmCD6nkGmAnHc7Kvck_uw7WHMUeHyMfa1LZoEQhOu0AenymKoHs6gH5anCUwBRAUUdTxXIAwDLod1Q-9Hz3_NBTqiV3Nh1Kn-WswWnA0GPIdKLHt0oI-PAZ0Y1CfL9otucvZtL7UR2qXZjEq8lSX0DVlpJX9ma7RFhcBu4evrTkKSfrdQVitXWiE0q1sSh1CeqlVtnVg6dfGuMKaoY9sA\n"},
+     :description
+     "Marks a message read by the currently logged in user.",
+     :responses
+     {"200" {:body {:example {}}},
+      "403"
+      {:body
+       {:example
+        "{\n  \"error\": {\n    \"status\": 403,\n    \"message\": \"User not logged in.\"\n  }\n}\n"}}}}}},
+  "/{toIdentity}"
+  {:uri "/{toIdentity}",
+   :raml-clj-parser.reader/uri-parameters ["toIdentity"],
+   :uriParameters
+   {:toIdentity
+    {:description "The identity to which the message belongs to.",
+     :type "string",
+     :example "2584bdd7-1cb2-48ed-a106-2a1b817cf909"}},
+   "/list"
+   {:uri "/list",
+    :raml-clj-parser.reader/uri-parameters [],
+    :description "List all messages belonging to an identity.",
+    :get
+    {:headers
+     {:Authorization
+      "description: The Authorization header, MUST be `Bearer {{access_token}}`\ntype: string\nexample: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6bnVsbCwiZXhwIjoxNTQ1MTQzMzY1LCJzdWIiOiIwYzMyYjQ3MC03ZmRmLTQ5MWYtYjA1NS04NmIyMzYxZjljZTkiLCJpc3MiOm51bGwsImF1ZCI6IjdjMDM3MjNjLWJiZWYtNDlkMS1hNmFiLTk2OGYzOGNlODRlNiIsImlhdCI6MTU0NTA1Njk2NS4wODE2Njh9.of5sEZBpzWHqjLd2LPsQZXfS1uQWLOeqdvFtqZtq8BwnCllpebX5MyjSaahOBLXBqyAhPxafEETfMZtyAe1-9P-6imvOTv8JDjw5AbNZelPAAflZHX89AcFCJpKuI603ZqywTTyIqdijVZArkNdEfGeQhJXoSmcDLElUnixw5rJF7FKdtCGjIP4aKazRxfn2DJOOhA1BazCR3xXV42OCgMsdiRYEJ2EhcUdlmA7OT-NjAgzOgS12zfVVEM9swwIVPPc27ewd4rmStJSUYHD2hHaRXQKmJqamJfA5W-vxEJH9G6UW3wwM--ROwYHMHcDfN2HIT-AqojMqitNHZr_AlrTQCpcv-BMA2uwg7DT8MMJ0bLrrdst7Eg_ha4U8iz4CgCTlu9MJEVFUzzLMTnMI8Cc74milBJ6xpHsgJItYjC1e4dVCs_5xxLfy44npg21TOX4Uds4uwLLOhy-gnBAVRzzmCD6nkGmAnHc7Kvck_uw7WHMUeHyMfa1LZoEQhOu0AenymKoHs6gH5anCUwBRAUUdTxXIAwDLod1Q-9Hz3_NBTqiV3Nh1Kn-WswWnA0GPIdKLHt0oI-PAZ0Y1CfL9otucvZtL7UR2qXZjEq8lSX0DVlpJX9ma7RFhcBu4evrTkKSfrdQVitXWiE0q1sSh1CeqlVtnVg6dfGuMKaoY9sA\n"},
+     :description "List messages sent to \"to\"-identity.",
+     :responses
+     {"200"
+      {:body
+       {:properties
+        "'@context':\n  description: The context URL\n  type: string\n  example: https://schema.org/\n'@type':\n  description: The type of the list\n  type: string\n  example: collection\nItemList:\n  description: The list of messages\n  type: message[]",
+        :example
+        "{\n  \"@context\": \"https://schema.org/\",\n  \"@type\": \"collection\",\n  \"ItemList\": [\n    {\n      \"@context\": \"<URL to message context>\",\n      \"@type\": \"Message\",\n      \"toIdentity\": \"<to identity ID>\",\n      \"subject\": \"<message subject>\",\n      \"content\": \"<message content>\",\n      \"cc\": [\n        \"<list of user identity IDs>\"\n      ],\n      \"createdAt\": \"<RFC3339 timestamp>\",\n      \"updatedAt\": \"<RFC3339 timestamp>\",\n      \"createdBy\": \"<user ID who created the message>\"\n    },\n    {\n      \"@context\": \"<URL to message context>\",\n      \"@type\": \"Message\",\n      \"toIdentity\": \"<to identity ID>\",\n      \"subject\": \"<message subject>\",\n      \"content\": \"<message content>\",\n      \"cc\": [\n        \"<list of user identity IDs>\"\n      ],\n      \"createdAt\": \"<RFC3339 timestamp>\",\n      \"updatedAt\": \"<RFC3339 timestamp>\",\n      \"createdBy\": \"<user ID who created the message>\"\n    }\n  ]\n}"}}}}}}}}
