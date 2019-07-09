@@ -2,7 +2,6 @@
   (:require
    [clojure.tools.cli :refer [parse-opts]]
    [clojure.string :as str]
-   [selmer.parser :as selmer]
    [raml-clj-parser.core :as raml]
    [ring-curl.core :as ring-curl]
    [code-examples-generator.fs-utils :as fs]
@@ -12,7 +11,7 @@
 
 
 ;; TODO cover this w/ integration tests
-(defn RAML->HTTP-examples
+(defn RAML->code-examples
   "Read RAML files from `source`, find all unique HTTP requests and save examples 
    in different languages to `dest` folder defined in `cli-args`."
   [{:keys [source dest sha] :as cli-args}]
@@ -58,6 +57,6 @@
       (:version options) "v0.1.0"
       (not (nil? errors)) (str/join \newline errors)
       (or (:help options) (empty? (:source options))) summary 
-      :else (RAML->HTTP-examples options))))
+      :else (RAML->code-examples options))))
 
 (defn -main [& args] (println (validate-args args)))

@@ -3,12 +3,36 @@
    [clojure.test :refer :all]
    [clojure.string :as str]
    [clojure.tools.cli :refer [parse-opts]]
+   [ring-curl.core :as ring-curl]
+   [raml-clj-parser.core :as raml]
+   [code-examples-generator.fs-utils :as fs]
+   [code-examples-generator.resource-parser :refer [get-requests]]
    [code-examples-generator.test-utils :as u]
    [code-examples-generator.core :refer :all]))
 
 
+(deftest test-RAML->code-examples
+  (testing "context map of code examples"
+    (let [ctx-map (atom false)
+          request {:ring-request {:mock-ring-request "mock-ring-request"}
+                   :desc "description"}]
+      (with-redefs [fs/get-RAML-files (constantly [1])
+                    raml/read-raml (constantly nil)
+                    get-requests (constantly [request])
+                    fs/get-dest (constantly nil)
+                    ring-curl/to-curl (constantly "cURL")
+                    fs/spit-raml-map (constantly nil)
+                    fs/save-code-examples (fn [_ m] (reset! ctx-map m))]
+        (RAML->code-examples {})
+        (is (= "cURL"
+               (:curl @ctx-map)))
+        (is (= (:desc request)
+               (:desc @ctx-map)))
+        (is (= (:ring-request request)
+               (dissoc @ctx-map :curl :desc)))))))    
+
 (deftest test-validate-args
-  (with-redefs [RAML->HTTP-examples (constantly "stub")]
+  (with-redefs [RAML->code-examples (constantly "stub")]
     (testing "displaying help"
       (are [args] (= (validate-args args) (:summary (parse-opts args cli-options)))
         nil '() '("-h") '("--help")))
