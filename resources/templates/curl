@@ -1,1 +1,1 @@
-{{curl|safe}}
+{{curl|replace:" -v ":" -i "|safe}}
