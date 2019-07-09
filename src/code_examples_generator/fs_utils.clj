@@ -52,7 +52,6 @@
 (defn- render-template
   "Render template"
   [file context-map]
-  (prn file)
   ;; Selmer template engine reads files relative to ClassLoader URL by default - 
   ;; https://github.com/yogthos/Selmer#resource-path.
   ;; Overwrite resource path to make it possible to read templates from custom
