@@ -43,8 +43,8 @@
           f2 (u/create-temp-file)
           templates (get-templates (.getParent f1))]
       (is (= (.getParent f1) (.getParent f2)))
-      (some #(= f1 %) templates)
-      (some #(= f2 %) templates))))
+      (is (some #(= f1 %) templates))
+      (is (some #(= f2 %) templates)))))
 
 (deftest test-get-dest
   (testing "path composition"

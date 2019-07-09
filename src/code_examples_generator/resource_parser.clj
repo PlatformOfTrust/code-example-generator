@@ -35,7 +35,7 @@
            :query-string (form-encode (coerce-examples->values queryParameters))
            :body (coerce-examples->values body)
            :headers (coerce-examples->values headers)}]
-    (into {} (remove (fn [[_ v]] (when (not (keyword? v)) (empty? v))) r))))
+    (into {} (remove (fn [[_ v]] (when-not (keyword? v) (empty? v))) r))))
 
 (defn get-methods
   "Parse node and returns a sequence of maps which have the following keys:
