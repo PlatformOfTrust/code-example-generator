@@ -3,7 +3,8 @@
   (:require 
    [clojure.string :as str]
    [clojure.pprint :refer [write]]
-   [clojure.java.io :as io]))
+   [clojure.java.io :as io]
+   [selmer.parser :as selmer]))
 
 
 ;; TODO Maybe output information about reading files
@@ -17,13 +18,18 @@
        file-seq
        (filter #(str/ends-with? (.getName %) ".raml"))))
 
-;; TODO make it dynamic!
-;; TODO implement multiple templates
-;; TODO implement template override from CLI
+;; TODO report if no templates found? Maybe meta?
+;; TODO should be part of cli validation?
 (defn get-templates
-  "TODO"
-  []
-  '("curl" "unirest.node.js" "urllib.py"))
+  "Read and return template files from either provided path or
+   custom location."
+  ([]
+   (get-templates "./resources/templates/"))
+  ([path]
+   (->> (io/file path)
+        file-seq
+        (remove #(or (.isDirectory %)
+                     (str/starts-with? (.getName %) "."))))))
 
 (defn get-dest
   "Return file path for code examples based on:
@@ -42,4 +48,23 @@
   (let [path (str/join "/" (list dest "debug.edn"))]
     (io/make-parents path)
     (spit path (write m :stream nil))))
-      
+
+(defn- render-template
+  "Render template"
+  [file context-map]
+  ;; Selmer template engine reads files relative to ClassLoader URL by default - 
+  ;; https://github.com/yogthos/Selmer#resource-path.
+  ;; Overwrite resource path to make it possible to read templates from custom
+  ;; location.
+  (-> file .getParentFile .getAbsolutePath selmer.parser/set-resource-path!)
+  (selmer/render-file (.getName file) context-map))
+
+;; TODO implement custom path!
+(defn save-code-examples
+  "Read template files, render them with provided `context-map` and save
+   as code examples to path provided as `code-examples-dir`."
+  [examples-dir context-map]
+  (doseq [template (get-templates)]
+    (let [code-example-path (str examples-dir "/" (.getName template))
+          content (render-template template context-map)]
+      (spit code-example-path content))))
