@@ -8,7 +8,8 @@
    [code-examples-generator.fs-utils :as fs]
    [code-examples-generator.resource-parser :refer [get-requests]]
    [code-examples-generator.validators :refer :all])
-  (:gen-class)) 
+  (:gen-class))
+
 
 ;; TODO cover this w/ integration tests
 (defn RAML->HTTP-examples
@@ -22,10 +23,7 @@
             curl (ring-curl/to-curl ring-request)
             context-map (conj ring-request {:curl curl :desc desc})]
         (fs/spit-raml-map examples-dir (raml/read-raml file))
-        (doseq [template-path (fs/get-templates)]
-          (let [code-example-path(str examples-dir "/" template-path)
-                content (selmer/render-file (str "templates/" template-path) context-map)]
-            (spit code-example-path content))))))
+        (fs/save-code-examples examples-dir context-map))))
   "raml->HTTP")
 
 ;; TODO add test that cli opts must not use any of the ring-request params!?

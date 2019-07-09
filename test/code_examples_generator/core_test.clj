@@ -6,7 +6,6 @@
    [code-examples-generator.core :refer :all]))
 
 
-
 (deftest test-help
   (testing "displaying help"
     (are [args] (= (validate-args args) (:summary (parse-opts args cli-options)))
@@ -17,12 +16,10 @@
     (are [args] (str/starts-with? (validate-args args) "Unknown option:")
       '("--blaah"))))
 
-
 (deftest test-version
   (testing "version should be displayed"
     (are [args] (= "v0.1.0" (validate-args args))
       '("-v") '("--version") '("-v" "--help"))))
-
 
 (deftest test-main-method
   (testing "outputs the result of argument validation"
