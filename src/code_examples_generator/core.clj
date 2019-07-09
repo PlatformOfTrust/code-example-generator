@@ -10,11 +10,10 @@
   (:gen-class))
 
 
-;; TODO cover this w/ integration tests
 (defn RAML->code-examples
   "Read RAML files from `source`, find all unique HTTP requests and save examples 
    in different languages to `dest` folder defined in `cli-args`."
-  [{:keys [source dest sha] :as cli-args}]
+  [{:keys [source dest] :as cli-args}]
   (doseq [file (fs/get-RAML-files source)]
     (doseq [{:keys [ring-request desc]}
             (get-requests (raml/read-raml file) cli-args)]
@@ -46,7 +45,7 @@
    ["-v" "--version"]])
 
 ;; TODO report RAML parser linter!?
-;; cannot output files. Proper error!
+;; cannot output files. Proper error!?
 ;; TODO non-fixed version!
 (defn validate-args
   "Validate command line arguments and trigger either example generation 

@@ -8,7 +8,8 @@
    [code-examples-generator.fs-utils :as fs]
    [code-examples-generator.resource-parser :refer [get-requests]]
    [code-examples-generator.test-utils :as u]
-   [code-examples-generator.core :refer :all]))
+   [code-examples-generator.core :refer :all]
+   [clojure.java.io :as io]))
 
 
 (deftest test-RAML->code-examples
@@ -24,12 +25,20 @@
                     fs/spit-raml-map (constantly nil)
                     fs/save-code-examples (fn [_ m] (reset! ctx-map m))]
         (RAML->code-examples {})
-        (is (= "cURL"
-               (:curl @ctx-map)))
-        (is (= (:desc request)
-               (:desc @ctx-map)))
-        (is (= (:ring-request request)
-               (dissoc @ctx-map :curl :desc)))))))    
+        (is (= (conj (:ring-request request)
+                     {:curl "cURL" :desc (:desc request)})
+               @ctx-map)))))
+  (testing "save code examples gets triggered for each resource+method"
+    (let [ctx-map (atom false)
+          counter (atom 0)
+          request {:ring-request {:mock-ring-request "mock-ring-request"}
+                   :desc "description"}]
+      (with-redefs [fs/spit-raml-map (constantly nil)
+                    fs/save-code-examples (fn [_ _] (swap! counter inc))]
+        (RAML->code-examples {:source "./test-resources/message-api"
+                              :dest "./test-doc"})
+        (is (= 6 @counter))))))
+          
 
 (deftest test-validate-args
   (with-redefs [RAML->code-examples (constantly "stub")]
