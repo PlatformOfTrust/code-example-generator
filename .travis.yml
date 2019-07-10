@@ -56,4 +56,4 @@ deploy:
     overwrite: true
     skip_cleanup: true
     on:
-      condition: $TRAVIS_TAG
+      condition: -n $TRAVIS_TAG
