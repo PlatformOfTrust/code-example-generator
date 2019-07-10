@@ -33,7 +33,7 @@ after_script:
   - lein annotations
 
 before_deploy:
-  - if [ -n "$TRAVIS_TAG" ];
+  - if [ -n "$TRAVIS_TAG" ]; then
     mv target/raml2http.jar target/raml2http-${TRAVIS-TAG}.jar;
     fi
 
