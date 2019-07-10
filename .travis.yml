@@ -49,11 +49,11 @@ deploy:
     api_key: $GITHUB_TOKEN
     name: ${TRAVIS_TAG} ($(date +'%Y-%m-%d'))
     target_commitish: $TRAVIS_COMMIT
-    body: "https://github.com/PlatformOfTrust/code-examples-generator/blob/master/CHANGELOG.md"
+    body: "<a href=\"./CHANGELOG.md\">Change log</a>"
     file:
       - target/raml2http.jar
       - target/raml2http-${TRAVIS_TAG}.jar
     overwrite: true
     skip_cleanup: true
     on:
-      condition: -n $TRAVIS_TAG
+      condition: tag IS present
