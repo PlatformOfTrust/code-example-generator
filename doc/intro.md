@@ -55,19 +55,17 @@ Example 3: Specify host. Default scheme (`https`) is used.
 java -jar raml2http.jar -s ./raml-files -d ./code-examples -H pot.org
 ```
 
-## Adding, removing and modifying code examples
-
-
-### How code example generation works
+## How code example generation works
 
 1. Code examples generator will parse RAML files in source folder and generate 
 a context map for each HTTP request that has been documented. 
-2. Then it will look up all the templates located in `resources/templates`
-3. Then it will render each template with provided context map resulting in
+2. Then it will look up all the templates located in `resources/templates` 
+(included in the binary).
+3. Next it will render each template with provided context map resulting in
 an code example.
 4. Finally code example will be saved as a file.
 
-#### 1. Example context map for `GET /v1/products/{version}`
+### 1. Example context map for `GET /v1/products/{version}`
 ```
 {:request-method :get
  :scheme "https"
@@ -77,7 +75,7 @@ an code example.
 
 ```
 
-#### 2. Example python template (`resources/templates/requests.py`)
+### 2. Example python template (`resources/templates/requests.py`)
 ```
 import requests
 
@@ -93,7 +91,7 @@ json_response = response.json()
 print(json_response);
 ```
 
-#### 3. Rendered code example in python.
+### 3. Rendered code example in python.
 ```
 import requests
 
@@ -107,45 +105,52 @@ json_response = response.json()
 print(json_response);
 ```
 
+### 4. Code example location 
 
-#### 4. Code example location 
-
-The final file location will be based on the following data:
-- RAML file `/<RAML_ROOT>/product-api/product-api.raml`
-- resource name `/products/{version}`
-- HTTP method `GET`
-- template filename in `resources/templates`:
-  - `requests.py, curl, unirest.node.js`
+Location is determined base on the following input:
+- RAML file path e.g. `/<RAML_ROOT>/product-api/product-api.raml`
+- resource name e.g. `/products/{version}`
+- HTTP method e.g. `GET`
+- template filename in `resources/templates` e.g. `python.py, curl, unirest.node.js`
 
 
 ```
 /<EXAMPLES_ROOT>/product-api/product-api.raml/_products_{version}/GET/curl
-/<EXAMPLES_ROOT>/product-api/product-api.raml/_products_{version}/GET/requests.py
+/<EXAMPLES_ROOT>/product-api/product-api.raml/_products_{version}/GET/python.py
 /<EXAMPLES_ROOT>/product-api/product-api.raml/_products_{version}/GET/unirest.node.js
 ```
 
-### Adding new templates
+## Adding, Modifying and removing code examples
 
-Add new template file to `resources/templates` and run code examples generator.
+This project uses [Selmer][selmer] templating engine for describing code example 
+templates. You can modify and remove existing templates located at 
+`resources/templates` and the changes will reflect in generated examples. Adding 
+a new file to `resources/templates` will result in additional code example 
 
-For example adding `resources/templates/unirest.php` will create a new code
-example.
+Example: `touch ./resources/templates/unirest.php` will create a new code example 
+`./code-examples/product-api/product-api.raml/_products_{version}/GET/unirest.php`.
 
-`/<EXAMPLES_ROOT>/product-api/product-api.raml/_products_{version}/GET/unirest.php`
+Setting up the development environment and running code example generator via 
+`lein run` is required for this. Another option is to push changes to github 
+and wait for the ci to build a new jar file.
 
-### Removing existing templates
+### Overriding templates locally (this feature is not implemented yet!)
 
-Removing a template file from `resources/templates` will remove code examples 
-based on this template.
+It is possible to override templates by providing jar file with custom template 
+source. This will make the code example generator ignore bundled template files 
+and look for templates from user provided path.
 
-### Modifying existing templates
+```
+# Add new template
+$ echo "{{scheme}}://{{server-name}}{{uri}}" > ./my-templates/unirest.php 
 
-This project uses [Selmer][selmer] templating engine.
+# Run code examples generator
+$ java -jar raml2http.jar -s ./raml-files -d ./code-examples -t ./my-templates -H pot.net
 
-
-### Override templates directory
-
- Not implemented!
+# View rendered code example
+$ cat ./code-examples/product-api/product-api.raml/_products_{version}/GET/unirest.php
+https://pot.net/products/{version}
+```
 
 --------------------------------------------------------------------------------
 Copyright © 2019 Platform Of Trust
