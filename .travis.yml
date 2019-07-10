@@ -24,19 +24,6 @@ script:
 after_success:
   - echo Seems to work!
 
-
-after_script:
-  # Run various code quality tools. Just for information.
-  - lein eastwood
-  - lein kibit
-  - lein bikeshed
-
-  # Check for outdated project dependencies.
-  - lein deps
-
-  # Display all annotations
-  - lein annotations
-
   # add version suffix if TAG or create temporary local tag for deployment
   # so that release from master would not be named untagged-...
   # https://docs.travis-ci.com/user/deployment/releases/#setting-the-tag-at-deployment-time
@@ -45,9 +32,9 @@ after_script:
       export COMMIT_MSG= "<a href=\"./CHANGELOG.md\">Change log</a>"
     elif [ "$TRAVIS_BRANCH" = "feature/publish_jar" -a "$TRAVIS_PULL_REQUEST" =  "false" ]; then
       export TRAVIS_TAG=latest;
-      git tag -d latest;
-      git tag -a latest $TRAVIS_COMMIT
-      export COMMIT_MSG= "Binary built from latest commit to master branch.";
+      # git tag -d latest;
+      # git tag -a latest $TRAVIS_COMMIT
+      # export COMMIT_MSG= "Binary built from latest commit to master branch.";
     fi
 
 # Deploy jar file to Github releases
@@ -62,4 +49,16 @@ deploy:
     file: target/raml2http*
     overwrite: true
     skip_cleanup: true
-    tags: true
+  
+after_script:
+  # Run various code quality tools. Just for information.
+  - lein eastwood
+  - lein kibit
+  - lein bikeshed
+
+  # Check for outdated project dependencies.
+  - lein deps
+
+  # Display all annotations
+  - lein annotations
+
