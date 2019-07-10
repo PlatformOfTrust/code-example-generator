@@ -33,7 +33,7 @@ after_script:
   - lein annotations
 
 before_deploy:
-  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ];
+  - if [[ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]];
     mv target/raml2http.jar target/raml2http-${TRAVIS-TAG}.jar;
     fi
 
@@ -44,6 +44,7 @@ deploy:
   file:
     - target/raml2http.jar
     - target/raml2http-${TRAVIS-TAG}.jar
+  file: target/raml2http*.jar
   skip_cleanup: true
   overwrite: true
   draft: true
