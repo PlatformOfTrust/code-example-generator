@@ -38,35 +38,26 @@ after_script:
   - lein annotations
 
 before_deploy:
-  # Add version suffix if TAG or create temporary local tag for
-  # deployment
+  # add version suffix if TAG or create temporary local tag for deployment
+  # so that release from master would not be named untagged-...
+  # https://docs.travis-ci.com/user/deployment/releases/#setting-the-tag-at-deployment-time
   - if [ -n "$TRAVIS_TAG" ]; then
       mv target/raml2http.jar target/raml2http-${TRAVIS_TAG}.jar;
+      export COMMIT_MSG= "<a href=\"./CHANGELOG.md\">Change log</a>"
+    elif [ "$TRAVIS_BRANCH" = "feature/publish_jar" -a "$TRAVIS_PULL_REQUEST" =  "false" ]; then
+      export TRAVIS_TAG=latest;
+      export COMMIT_MSG= "Binary built from latest commit to master branch."
     fi
-
-  # Delete local and remote tags named `latest` if they exist
-  # as deploy step wants to create a new tag `latest`and will
-  # fail is unable to do that.
-  - git tag -d latest || true
-  - git push origin :refs/tags/latest || true
 
 # Deploy jar file to Github releases
 deploy:
   - provider: releases
     api_key: $GITHUB_TOKEN
-    name: latest ($(date +'%Y-%m-%d'))
-    tag_name: "latest"
+    name: ${TRAVIS_TAG} ($(date +'%Y-%m-%d'))
+    tag_name: ${TRAVIS_TAG}
     target_commitish: $TRAVIS_COMMIT
-    body: "Binary built from latest commit to master branch."
-    file: target/raml2http.jar
+    body: $COMMIT_MSG
+    file_glob: true
+    file: target/raml2http*
     overwrite: true
     skip_cleanup: true
-    on:
-      branch: feature/publish_jar
-  - provider: releases
-    api_key: $GITHUB_TOKEN
-    body: "<a href=\"./CHANGELOG.md\">Change log</a>"
-    file: target/raml2http-${TRAVIS_TAG}.jar
-    skip_cleanup: true
-    on:
-      tags: true
