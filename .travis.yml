@@ -34,10 +34,10 @@ after_script:
 
 before_deploy:
   # add version suffix if TAG or create temporary local tag for deployment
-  # so that release from master would not be named untagged-...
+  # so that release would not be named untagged-...
   - if [ -n "$TRAVIS_TAG" ]; then
       mv target/raml2http.jar target/raml2http-${TRAVIS_TAG}.jar;
-    elif [ "$TRAVIS_BRANCH" = "feature/publish_jar" -a "$TRAVIS_PULL_REQUEST" =  "false" ]; then
+    else
       export TRAVIS_TAG=latest;
     fi
 
@@ -54,4 +54,4 @@ deploy:
     overwrite: true
     skip_cleanup: true
     on:
-      condition: (branch = feature/publish_jar) OR (tag is present)
+      condition: ((branch = feature/publish_jar) OR (tag is present))
