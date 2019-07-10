@@ -32,7 +32,6 @@ after_script:
   # Display all annotations
   - lein annotations
 
-before_deploy:
   # add version suffix if TAG or create temporary local tag for deployment
   # so that release would not be named untagged-...
   - if [ -n "$TRAVIS_TAG" ]; then
@@ -54,4 +53,4 @@ deploy:
     overwrite: true
     skip_cleanup: true
     on:
-      condition: ((branch = feature/publish_jar) OR (tag is present))
+      condition: -n $TRAVIS_TAG
