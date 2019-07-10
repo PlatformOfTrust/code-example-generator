@@ -54,4 +54,4 @@ deploy:
     overwrite: true
     skip_cleanup: true
     on:
-      condition: branch = feature/publish_jar OR tag is present
+      condition: (branch = feature/publish_jar) OR (tag is present)
