@@ -46,7 +46,9 @@ before_deploy:
       export COMMIT_MSG= "<a href=\"./CHANGELOG.md\">Change log</a>"
     elif [ "$TRAVIS_BRANCH" = "feature/publish_jar" -a "$TRAVIS_PULL_REQUEST" =  "false" ]; then
       export TRAVIS_TAG=latest;
-      export COMMIT_MSG= "Binary built from latest commit to master branch."
+      git tag -d latest;
+      git tag latest;
+      export COMMIT_MSG= "Binary built from latest commit to master branch.";
     fi
 
 # Deploy jar file to Github releases
