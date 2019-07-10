@@ -45,18 +45,6 @@ before_deploy:
 
 # Deploy jar file to Github releases
 deploy:
-  # NB! this first provider is required.
-  # Releases will always get deployed with the second provider but
-  # it will not actually get triggered for branches unless there
-  # is a configuration for 'all_branches: true'.
-  - provider: releases
-    api_key: $GITHUB_TOKEN
-    file:  target/raml2http.jar
-    skip_cleanup: true
-    on:
-      all_branches: true
-  # This get's executed for all tags and `master` branch due
-  # to local tag created in `before_deploy` stage.
   - provider: releases
     api_key: $GITHUB_TOKEN
     name: ${TRAVIS_TAG} ($(date +'%Y-%m-%d'))
@@ -68,4 +56,4 @@ deploy:
     overwrite: true
     skip_cleanup: true
     on:
-      tags: true
+      condition: $TRAVIS_TAG
