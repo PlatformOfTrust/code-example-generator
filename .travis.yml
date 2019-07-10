@@ -36,29 +36,20 @@ before_deploy:
   - if [ -n "$TRAVIS_TAG" ]; then
     # add version suffix if TAG
     mv target/raml2http.jar target/raml2http-${TRAVIS-TAG}.jar;
-    else;
+    elif [ [ "$TRAVIS_BRANCH" = "feature/publish_jar" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ] ];
     # create temporary tag for deploy so that release from master
     # would not be named untagged-....
-    git tag latest
+    git tag latest; export TRAVIS_TAG=latest;
     fi
 
 # Deploy jar file to Github releases
 deploy:
-  # master branch updates 'latest'
-  - provider: releases
-    api_key: $GITHUB_TOKEN
-    name: latest ($(date +'%d.%m.%Y %R'))
-    file: target/raml2http.jar
-    skip_cleanup: true
-    overwrite: true
-    on:
-      branch: feature/publish_jar
-  # tags have unique releases
-  # todo add body w/ release notes?
-  - provider: releases
-    api_key: $GITHUB_TOKEN
-    body: "https://github.com/PlatformOfTrust/code-examples-generator/blob/master/CHANGELOG.md"
-    file: target/raml2http-${TRAVIS-TAG}.jar
-    skip_cleanup: true
-    tags: true
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  name: ${TRAVIS_TAG} ($(date +'%d.%m.%Y %R'))
+  body: "https://github.com/PlatformOfTrust/code-examples-generator/blob/master/CHANGELOG.md"
+  file_glob: true
+  file: target/raml2http-*
+  skip_cleanup: true
+  tags: true
 
