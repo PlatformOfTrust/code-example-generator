@@ -39,6 +39,9 @@ before_deploy:
       mv target/raml2http.jar target/raml2http-${TRAVIS-TAG}.jar;
     fi
 
+  # Delete local 'latest' tag if it exists because...
+  - it tag -d latest || true
+
 # Deploy jar file to Github releases
 deploy:
   - provider: releases
