@@ -39,7 +39,8 @@ before_deploy:
   - if [ -n "$TRAVIS_TAG" ]; then
     mv target/raml2http.jar target/raml2http-${TRAVIS-TAG}.jar;
     elif [ [ "$TRAVIS_BRANCH" = "feature/publish_jar" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ] ];
-    git tag latest; export TRAVIS_TAG=latest;
+    git tag latest;
+    export TRAVIS_TAG=latest;
     fi
 
 # Deploy jar file to Github releases
@@ -53,5 +54,4 @@ deploy:
   skip_cleanup: true
   on:
     all_branches: true
-    condition: $TRAVIS_BRANCH =~ ^(feature/publish_jar)$
 
