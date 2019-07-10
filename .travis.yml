@@ -31,6 +31,8 @@ after_success:
     elif [ "$TRAVIS_BRANCH" = "feature/publish_jar" -a "$TRAVIS_PULL_REQUEST" =  "false" ]; then
       export TRAVIS_TAG=latest;
       export COMMIT_MSG= "Binary built from latest commit to master branch.";
+      git tag -d latest
+      git tag -a latest -m "latest"
     fi
 
 # Deploy jar file to Github releases
