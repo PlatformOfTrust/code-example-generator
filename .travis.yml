@@ -40,8 +40,6 @@ before_deploy:
     elif [ "$TRAVIS_BRANCH" = "feature/publish_jar" -a "$TRAVIS_PULL_REQUEST" =  "false" ]; then
       export TRAVIS_TAG=latest;
     fi
-  - ls target
-  - echo ${TRAVIS_TAG}
 
 # Deploy jar file to Github releases
 deploy:
@@ -56,4 +54,4 @@ deploy:
     overwrite: true
     skip_cleanup: true
     on:
-      condition: tag IS present
+      condition: branch = feature/publish_jar OR tag is present
