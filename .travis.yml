@@ -37,7 +37,6 @@ after_script:
   # Display all annotations
   - lein annotations
 
-before_deploy:
   # add version suffix if TAG or create temporary local tag for deployment
   # so that release from master would not be named untagged-...
   # https://docs.travis-ci.com/user/deployment/releases/#setting-the-tag-at-deployment-time
@@ -47,7 +46,7 @@ before_deploy:
     elif [ "$TRAVIS_BRANCH" = "feature/publish_jar" -a "$TRAVIS_PULL_REQUEST" =  "false" ]; then
       export TRAVIS_TAG=latest;
       git tag -d latest;
-      git tag -a latest -m "latest"
+      git tag -a latest $TRAVIS_COMMIT
       export COMMIT_MSG= "Binary built from latest commit to master branch.";
     fi
 
@@ -63,3 +62,4 @@ deploy:
     file: target/raml2http*
     overwrite: true
     skip_cleanup: true
+    tags: true
