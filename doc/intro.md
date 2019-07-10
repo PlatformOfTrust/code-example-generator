@@ -10,8 +10,15 @@ You can run `java --version` to check if you already have it installed.
 
 ### Download jar file
 
-TODO!
+Go to https://github.com/PlatformOfTrust/code-examples-generator/releases and 
+choose either specific release or `latest` and download  `raml2http.jar` from 
+release assets. 
 
+You can also use cURL to download it from command line.
+
+```
+curl -L -o raml2http.jar https://github.com/PlatformOfTrust/code-examples-generator/releases/download/latest/raml2http.jar > /dev/null
+```
 
 ## Using the CLI tool
 

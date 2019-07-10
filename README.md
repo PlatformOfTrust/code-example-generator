@@ -85,11 +85,11 @@ has been set as a criteria for successful builds in CI. You can change it in
 ## Deployment
 
 Each commit to master branch will trigger a new build process that will build a 
-binary (jar file e.g. `raml2http-<branch_name>.jar`) that will be uploaded to 
-TODO! See [user guide][guide] how to download and use it.
+binary (jar file `raml2http.jar`) that will be uploaded to the assets of 
+[latest release][releases-latest]. 
 
-<!-- TODO! Maybe add tagging which creates raml2http-1.0.2.jar etc. It would be nice  -->
-<!-- but needs time to test and fiddle with CI. -->
+Each tag will create a [release][releases] with tag name and upload jar file 
+with version suffix e.g. `raml2http-v1.0.1.jar`.
 
 ## Contributing
 
@@ -124,3 +124,5 @@ Copyright © 2019 Platform Of Trust
 [semver]: http://semver.org/
 [cnvc]: https://www.conventionalcommits.org/
 [guide]: ./doc/intro.md
+[releases-latest]: https://github.com/PlatformOfTrust/code-examples-generator/releases/tag/latest
+[releases]: https://github.com/PlatformOfTrust/code-examples-generator/releases
