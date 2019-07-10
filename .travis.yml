@@ -47,8 +47,8 @@ before_deploy:
   # Delete local and remote tags named `latest` if they exist
   # as deploy step wants to create a new tag `latest`and will
   # fail is unable to do that.
-  #- git tag -d latest || true
-  #- git push origin :refs/tags/latest || true
+  - git tag -d latest || true
+  - git push origin :refs/tags/latest || true
 
 # Deploy jar file to Github releases
 deploy:
