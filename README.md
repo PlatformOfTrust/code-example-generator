@@ -7,7 +7,10 @@ The purpose of this project is to create a command line tool that is able to
 parse Platform of Trust API documentation and examples from [RAML 1.0](RAML-spec) 
 files and generate example HTTP requests in various languages.
 
-For instructions how to use this tool see [USER GUIDE][guide].
+For instructions how to use this tool see [USER GUIDE][guide]. 
+
+See also [Code Examples Validator][validator] and implementation (`.travis.yml`) 
+in the [PlatformOfTrust/docs][docs] repository.
 
 ## Getting Started
 
@@ -126,3 +129,5 @@ Copyright © 2019 Platform Of Trust
 [guide]: ./doc/intro.md
 [releases-latest]: https://github.com/PlatformOfTrust/code-examples-generator/releases/tag/latest
 [releases]: https://github.com/PlatformOfTrust/code-examples-generator/releases
+[validator]: https://github.com/PlatformOfTrust/code-examples-validator
+[docs]: https://github.com/PlatformOfTrust/docs
