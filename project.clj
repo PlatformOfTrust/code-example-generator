@@ -32,8 +32,7 @@
   :profiles {:uberjar {:omit-source true
                        :aot :all
                        :uberjar-name "raml2http.jar"
-                       :source-paths ["src"]
-                       :resource-paths ["resources"]}
+                       :source-paths ["src"]}
              :dev {:dependencies [[pjstadig/humane-test-output "0.9.0"]]
                    :plugins [[lein-kibit "0.1.6"]
                              [jonase/eastwood "0.3.5"]
