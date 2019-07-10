@@ -45,6 +45,7 @@ deploy:
     file: target/raml2http*
     overwrite: true
     skip_cleanup: true
+    tags: true
   
 after_script:
   # Run various code quality tools. Just for information.
