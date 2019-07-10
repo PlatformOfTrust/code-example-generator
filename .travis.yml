@@ -33,12 +33,12 @@ after_script:
   - lein annotations
 
 before_deploy:
+  # add version suffix if TAG or
+  # create temporary local tag for deployment so that release from master
+  # would not be named untagged-...
   - if [ -n "$TRAVIS_TAG" ]; then
-    # add version suffix if TAG
     mv target/raml2http.jar target/raml2http-${TRAVIS-TAG}.jar;
     elif [ [ "$TRAVIS_BRANCH" = "feature/publish_jar" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ] ];
-    # create temporary tag for deploy so that release from master
-    # would not be named untagged-....
     git tag latest; export TRAVIS_TAG=latest;
     fi
 
