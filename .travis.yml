@@ -32,19 +32,31 @@ after_script:
   # Display all annotations
   - lein annotations
 
+before_deploy:
   # add version suffix if TAG or create temporary local tag for deployment
   # so that release from master would not be named untagged-...
   - if [ -n "$TRAVIS_TAG" ]; then
-      mv target/raml2http.jar target/raml2http-${TRAVIS-TAG}.jar;
+      mv target/raml2http.jar target/raml2http-${TRAVIS_TAG}.jar;
     elif [ "$TRAVIS_BRANCH" = "feature/publish_jar" -a "$TRAVIS_PULL_REQUEST" =  "false" ]; then
       export TRAVIS_TAG=latest;
     fi
   - ls target
-  - echo ${TRAVIS-TAG}
-  - echo target/raml2http-${TRAVIS-TAG}
+  - echo ${TRAVIS_TAG}
 
 # Deploy jar file to Github releases
 deploy:
+  # NB! this first provider is required.
+  # Releases will always get deployed with the second provider but
+  # it will not actually get triggered for branches unless there
+  # is a configuration for 'all_branches: true'.
+  - provider: releases
+    api_key: $GITHUB_TOKEN
+    file:  target/raml2http.jar
+    skip_cleanup: true
+    on:
+      all_branches: true
+  # This get's executed for all tags and `master` branch due
+  # to local tag created in `before_deploy` stage.
   - provider: releases
     api_key: $GITHUB_TOKEN
     name: ${TRAVIS_TAG} ($(date +'%Y-%m-%d'))
@@ -52,7 +64,7 @@ deploy:
     body: "https://github.com/PlatformOfTrust/code-examples-generator/blob/master/CHANGELOG.md"
     file:
       - target/raml2http.jar
-      - target/raml2http-${TRAVIS-TAG}.jar
+      - target/raml2http-${TRAVIS_TAG}.jar
     overwrite: true
     skip_cleanup: true
     on:
