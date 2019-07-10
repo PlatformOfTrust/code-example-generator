@@ -24,19 +24,6 @@ script:
 after_success:
   - echo Seems to work!
 
-
-after_script:
-  # Run various code quality tools. Just for information.
-  - lein eastwood
-  - lein kibit
-  - lein bikeshed
-
-  # Check for outdated project dependencies.
-  - lein deps
-
-  # Display all annotations
-  - lein annotations
-
 before_deploy:
   # add version suffix if TAG or create temporary local tag for deployment
   # so that release from master would not be named untagged-...
@@ -69,3 +56,15 @@ deploy:
     on:
       tags: true
       condition: "$TRAVIS_TAG != latest"
+      
+after_script:
+  # Run various code quality tools. Just for information.
+  - lein eastwood
+  - lein kibit
+  - lein bikeshed
+
+  # Check for outdated project dependencies.
+  - lein deps
+
+  # Display all annotations
+  - lein annotations
