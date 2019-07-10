@@ -33,6 +33,7 @@ after_script:
   - lein annotations
 
 before_deploy:
+  # add version suffix if TAG
   - if [ -n "$TRAVIS_TAG" ]; then
     mv target/raml2http.jar target/raml2http-${TRAVIS-TAG}.jar;
     fi
@@ -41,9 +42,9 @@ before_deploy:
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
-  file:
-    - target/raml2http.jar
-    - target/raml2http-${TRAVIS-TAG}.jar
+  name: latest
+  file_glob: true
+  file: target/raml2http*
   skip_cleanup: true
   overwrite: true
   on:
