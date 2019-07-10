@@ -1,3 +1,8 @@
+branches:
+  except:
+  # latest branch is reserved for release tagging
+  - latest
+  
 language: clojure
 
 install:
