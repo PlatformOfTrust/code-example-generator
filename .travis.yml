@@ -33,7 +33,7 @@ after_script:
   - lein annotations
 
 before_deploy:
-  - if [-n "$TRAVIS_TAG" ];
+  - if [ -n "$TRAVIS_TAG" ];
     mv target/raml2http.jar target/raml2http-${TRAVIS-TAG}.jar;
     fi
 
@@ -44,7 +44,6 @@ deploy:
   file:
     - target/raml2http.jar
     - target/raml2http-${TRAVIS-TAG}.jar
-  file: target/raml2http*.jar
   skip_cleanup: true
   overwrite: true
   draft: true
