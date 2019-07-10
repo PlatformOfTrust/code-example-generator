@@ -22,7 +22,7 @@ script:
   # TODO Run integration/acceptance tests
 
 after_success:
-  # Add version suffix if TAG or create temporary local tag for deployment
+# add version suffix if TAG or create temporary local tag for deployment
   # so that release from master would not be named untagged-...
   # https://docs.travis-ci.com/user/deployment/releases/#setting-the-tag-at-deployment-time
   - if [ -n "$TRAVIS_TAG" ]; then
@@ -30,8 +30,6 @@ after_success:
       export COMMIT_MSG= "<a href=\"./CHANGELOG.md\">Change log</a>"
     elif [ "$TRAVIS_BRANCH" = "feature/publish_jar" -a "$TRAVIS_PULL_REQUEST" =  "false" ]; then
       export TRAVIS_TAG=latest;
-      # git tag -d latest;
-      # git tag -a latest $TRAVIS_COMMIT
       export COMMIT_MSG= "Binary built from latest commit to master branch.";
     fi
 
