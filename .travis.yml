@@ -46,7 +46,6 @@ deploy:
     - target/raml2http-${TRAVIS-TAG}.jar
   skip_cleanup: true
   overwrite: true
-  draft: true
   on:
     branch: feature/publish_jar
 
