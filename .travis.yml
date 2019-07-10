@@ -32,29 +32,14 @@ after_script:
   # Display all annotations
   - lein annotations
 
-before_deploy:
-  # upload jar file to docs folder so that it will be
-  # published to github pages and can be download with cURL
-  - mkdir ./docs
-  - if [ -n "$TRAVIS_TAG" ]; then 
-    mv target/raml2http.jar target/raml2http-${TRAVIS-TAG}.jar;
-    fi
-
 # Deploy jar file to Github releases
 deploy:
-  # drafts from master branch
-  - provider: releases
-    api_key: $GITHUB_TOKEN
-    file: target/raml2http.jar
-    skip_cleanup: true
-    draft: true
-    on:
-      branch: feature/publish_jar
-  # releaseses from tags
-  - provider: releases
-    api_key: $GITHUB_TOKEN
-    file: target/raml2http-${TRAVIS-TAG}.jar
-    skip_cleanup: true
-    on:
-      tags: true
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file: target/raml2http.jar
+  skip_cleanup: true
+  draft: true
+  on:
+    branch: feature/publish_jar
+    tags: true
 
