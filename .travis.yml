@@ -45,20 +45,13 @@ before_deploy:
 # Deploy jar file to Github releases
 deploy:
   - provider: releases
-    api_key: $GITHUB_TOKEN
-    name: ${TRAVIS_TAG} ($(date +'%d.%m.%Y %R'))
-    body: "BR https://github.com/PlatformOfTrust/code-examples-generator/blob/master/CHANGELOG.md"
-    file_glob: true
-    file: target/raml2http-*
-    skip_cleanup: true
-    on:
-      all_branches: true
-  - provider: releases
+    target_commitish: $TRAVIS_COMMIT
     api_key: $GITHUB_TOKEN
     name: ${TRAVIS_TAG} ($(date +'%d.%m.%Y %R'))
     body: "TAG https://github.com/PlatformOfTrust/code-examples-generator/blob/master/CHANGELOG.md"
-    file_glob: true
-    file: target/raml2http-*
+    file:
+      - target/raml2http.jar
+      - target/raml2http-${TRAVIS-TAG}.jar
     skip_cleanup: true
     on:
       tags: true
