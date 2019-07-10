@@ -53,4 +53,4 @@ deploy:
     overwrite: true
     skip_cleanup: true
     on:
-      condition: branch is "feature/publish_jar"
+      condition: $TRAVIS_BRANCH =~ ^feature/publish_jar$
