@@ -54,12 +54,12 @@ deploy:
     name: latest ($(date +'%Y-%m-%d'))
     tag_name: $TRAVIS_TAG
     target_commitish: $TRAVIS_COMMIT
-    body: "Binary built from latest commit to master branch ($TRAVIS_COMMIT)"
+    body: "Binary built from latest commit to master branch ($TRAVIS_COMMIT).</br></br>```$TRAVIS_COMMIT_MESSAGE```"
     file: target/raml2http.jar
     overwrite: true
     skip_cleanup: true
     on:
-      branch: feature/publish_jar
+      branch: master
   - provider: releases
     api_key: $GITHUB_TOKEN
     body: "<a href=\"./CHANGELOG.md\">Change log</a>"
