@@ -51,5 +51,6 @@ deploy:
   file_glob: true
   file: target/raml2http-*
   skip_cleanup: true
+  branch: feature/publish_jar
   tags: true
 
