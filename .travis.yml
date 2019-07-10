@@ -36,7 +36,7 @@ before_deploy:
   # Add version suffix if TAG or create temporary local tag for
   # deployment
   - if [ -n "$TRAVIS_TAG" ]; then
-      mv target/raml2http.jar target/raml2http-${TRAVIS-TAG}.jar;
+      mv target/raml2http.jar target/raml2http-${TRAVIS_TAG}.jar;
     fi
 
   # Delete local and remote tags named `latest` if they exist
@@ -54,7 +54,6 @@ deploy:
     target_commitish: $TRAVIS_COMMIT
     body: "Binary built from latest commit to master branch."
     file: target/raml2http.jar
-    draft: true
     overwrite: true
     skip_cleanup: true
     on:
