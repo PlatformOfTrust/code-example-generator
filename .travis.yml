@@ -1,3 +1,8 @@
+branches:
+  except:
+  # latest branch is reserved for release tagging
+  - latest
+  
 language: clojure
 
 install:
@@ -31,3 +36,36 @@ after_script:
 
   # Display all annotations
   - lein annotations
+
+before_deploy:
+  # add version suffix if TAG or create temporary local tag for deployment
+  # so that release from master would not be named untagged-...
+  # https://docs.travis-ci.com/user/deployment/releases/#setting-the-tag-at-deployment-time
+  - if [ -n "$TRAVIS_TAG" ]; then
+      mv target/raml2http.jar target/raml2http-${TRAVIS_TAG}.jar;
+    else
+      export TRAVIS_TAG=latest;
+    fi
+
+# Deploy jar file to Github releases
+deploy:
+  - provider: releases
+    api_key: $GITHUB_TOKEN
+    name: latest ($(date +'%Y-%m-%d'))
+    tag_name: $TRAVIS_TAG
+    target_commitish: $TRAVIS_COMMIT
+    body: "Binary built from latest commit to master branch ($TRAVIS_COMMIT)"
+    file: target/raml2http.jar
+    overwrite: true
+    skip_cleanup: true
+    on:
+      branch: feature/publish_jar
+  - provider: releases
+    api_key: $GITHUB_TOKEN
+    body: "<a href=\"./CHANGELOG.md\">Change log</a>"
+    file: target/raml2http-${TRAVIS_TAG}.jar
+    overwrite: true
+    skip_cleanup: true
+    on:
+      tags: true
+      condition: "$TRAVIS_TAG != latest"
