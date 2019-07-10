@@ -44,8 +44,9 @@ deploy:
   - provider: releases
     api_key: $GITHUB_TOKEN
     name: latest ($(date +'%Y-%m-%d'))
+    tag_name: latest
     target_commitish: $TRAVIS_COMMIT
-    body: "Binary built from latest commit to master branch"
+    body: "Binary built from latest commit to master branch."
     file: target/raml2http.jar
     overwrite: true
     skip_cleanup: true
