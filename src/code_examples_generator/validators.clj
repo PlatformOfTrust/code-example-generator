@@ -18,6 +18,11 @@
         (and (.isDirectory file)
              (.canWrite file)))))
 
+(defn is-valid-host?
+  "Must be  string"
+  [s]
+  (and (string? s) (not (empty? s))))
+
 (defn is-valid-scheme?
   "Valid schemes are `http` and `https`."
   [s]

@@ -41,10 +41,10 @@ passing any extra parameters it will display command line help.
 
 ```
  $lein run
-  -s, --source PATH                    Required RAML file or a directory that contains RAML files.
-  -d, --dest PATH      ./pot-examples  Optional Directory for generated code examples.
-  -H, --host HOST      pot.org         Required URI host e.g. `pot.org`.
-  -S, --scheme SCHEME  https           Optional URI scheme (`https` or `http`).
+  -s, --source PATH                     Required RAML file or a directory that contains RAML files.
+  -d, --dest PATH      ./pot-examples   Optional Directory for generated code examples.
+  -H, --host HOST      api.oftrust.net  Optional URI host.
+  -S, --scheme SCHEME  https            Optional URI scheme (`https` or `http`).
   -h, --help
   -v, --version
 ```
