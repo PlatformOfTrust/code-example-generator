@@ -126,7 +126,7 @@ Copyright © 2019 Platform Of Trust
 [bbatsov]: https://github.com/bbatsov/clojure-style-guide
 [semver]: http://semver.org/
 [cnvc]: https://www.conventionalcommits.org/
-[guide]: ./doc/intro.md
+[guide]: ./doc/README.md
 [releases-latest]: https://github.com/PlatformOfTrust/code-examples-generator/releases/tag/latest
 [releases]: https://github.com/PlatformOfTrust/code-examples-generator/releases
 [validator]: https://github.com/PlatformOfTrust/code-examples-validator

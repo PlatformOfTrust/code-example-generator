@@ -114,7 +114,7 @@ print(json_response);
 
 ### 4. Code example location 
 
-Location is determined base on the following input:
+Location is determined based on the following input:
 - RAML file path e.g. `/<RAML_ROOT>/product-api/product-api.raml`
 - resource name e.g. `/products/{version}`
 - HTTP method e.g. `GET`
@@ -154,7 +154,7 @@ $ echo "{{scheme}}://{{server-name}}{{uri}}" > ./my-templates/unirest.php
 # Run code examples generator
 $ java -jar raml2http.jar -s ./raml-files -d ./code-examples -t ./my-templates -H pot.net
 
-# View rendered code example
+# View saved code example
 $ cat ./code-examples/product-api/product-api.raml/_products_{version}/GET/unirest.php
 https://pot.net/products/{version}
 ```
