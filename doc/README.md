@@ -40,13 +40,17 @@ java -jar raml2http.jar
 Example 1: default host and scheme (`https://api.oftrust.net`)
 
 ```
-java -jar raml2http.jar --source ../docs/raml2markdown/src  --destination ../code-examples
+java -jar raml2http.jar -s ../docs/raml2markdown/src -d ../code-examples
 ```
 
 Example 2: custom host and scheme (`http://mockbin.com/request`)
 
 ```
-java -jar raml2http.jar -s ./raml-files -d ./code-examples -H mockbin.com/request -S http
+java -jar raml2http.jar \
+    --source ./raml-files \
+    --destination ./code-examples \
+    --host mockbin.com/request \
+    --scheme http
 ```
 
 ## How code example generation works
