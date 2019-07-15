@@ -7,16 +7,14 @@
    [selmer.parser :as selmer]))
 
 
-;; TODO Maybe output information about reading files
-;; e.g. what is the path, how many files. Use with-meta?
-;; TODO maybe single file should not have .raml suffix?
-(defn get-RAML-files
+;; TODO test that reading a single file works
+(defn get-files
   "Read provided `path` and return a file sequence of `java.io.Files` 
-   filtered by `.raml` suffix."
-  [path]
+   optionally filtered by suffix `s`."
+  [path suffix]
   (->> (io/file path)
        file-seq
-       (filter #(str/ends-with? (.getName %) ".raml"))))
+       (filter #(str/ends-with? (.getName %) suffix))))
 
 ;; TODO report if no templates found? Maybe meta?
 ;; TODO should be part of cli validation?
@@ -41,7 +39,7 @@
 
 (defn get-dest
   "Return file path for code examples based on:
-   a) destinatio from command line arguments
+   a) destination from command line arguments
    b) RAML file path relative to `:source`
    c) HTTP resource, name and method"
   [{:keys [source dest]} raml-file {:keys [uri request-method]}]
@@ -74,9 +72,12 @@
 ;; TODO implement custom path!
 (defn save-code-examples
   "Read template files, render them with provided `context-map` and save
-   as code examples to path provided as `code-examples-dir`."
-  [examples-dir context-map]
-  (doseq [template (get-templates)]
-    (let [code-example-path (str examples-dir "/" template #_(.getName template))
-          content (render-template template context-map)]
-      (spit code-example-path content))))
+   as code examples to path provided as `code-examples-dir`. Return path."
+  [examples-dir templates context-map]
+  (let [examples (atom '())]
+    (doseq [template templates]
+     (let [code-example-path (str examples-dir "/" template #_(.getName template))
+           content (render-template template context-map)]
+       (spit code-example-path content)
+       (swap! examples conj code-example-path)))
+    @examples))
