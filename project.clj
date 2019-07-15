@@ -7,6 +7,8 @@
   :main code-examples-generator.core
   :dependencies [[org.clojure/clojure "1.10.1"]
                  [org.clojure/tools.cli "0.4.2"]
+                 [org.clojure/tools.logging "0.4.1"]
+                 [org.slf4j/slf4j-log4j12 "1.6.2"]
                  [raml-clj-parser "0.1.1-SNAPSHOT"]
                  [ring/ring-codec "1.1.2"]
                  [ring-curl "1.0.1"]
