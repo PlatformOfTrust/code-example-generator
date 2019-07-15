@@ -27,39 +27,26 @@ run `java -jar raml2http.jar` to display command line help.
 
 ```
 java -jar raml2http.jar
-  -s, --source PATH                    Required RAML file or a directory that contains RAML files.
-  -d, --dest PATH      ./pot-examples  Optional Directory for generated code examples.
-  -H, --host HOST      pot.org         Required URI host e.g. `pot.org`.
-  -S, --scheme SCHEME  https           Optional URI scheme (`https` or `http`).
+  -s, --source PATH                     Required RAML file or a directory that contains RAML files.
+  -d, --dest PATH      ./pot-examples   Optional Directory for generated code examples.
+  -H, --host HOST      api.oftrust.net  Optional URI host.
+  -S, --scheme SCHEME  https            Optional URI scheme (`https` or `http`).
   -h, --help
   -v, --version
 ```
 
 ### Examples 
 
-Example 1: Read RAML files from `./raml-files` and save code examples to 
-`./code-examples`.
+Example 1: default host and scheme (`https://api.oftrust.net`)
 
 ```
-java -jar raml2http.jar -s ./raml-files -d ./code-examples
+java -jar raml2http.jar --source ../docs/raml2markdown/src  --destination ../code-examples
 ```
 
-or
-
-```
-java -jar raml2http.jar --source ./raml-files --destination ./code-examples
-```
-
-Example 2: Specify host and scheme (http://mockbin.com/request).
+Example 2: custom host and scheme (`http://mockbin.com/request`)
 
 ```
 java -jar raml2http.jar -s ./raml-files -d ./code-examples -H mockbin.com/request -S http
-```
-
-Example 3: Specify host. Default scheme (`https`) is used.
-
-```
-java -jar raml2http.jar -s ./raml-files -d ./code-examples -H pot.org
 ```
 
 ## How code example generation works
@@ -88,7 +75,7 @@ import requests
 
 response = requests.{{request-method|name}}(
     '{{scheme}}://{{server-name}}{{uri}}',
-    {% if query-string %}params={{query-string|safe}},{% endif %}
+    {% if query-string %}params='{{query-string|safe}}',{% endif %}
     {% if headers %}headers={{headers|json|safe|default:"{}"}},{% endif %}
     {% if body %}data=({{body|json|safe}}){% endif %}
 )
@@ -104,7 +91,7 @@ import requests
 
 response = requests.get(
     'https://pot.org/products/{version}',
-    params=offset%3F=200&limit%3F=400,
+    params='offset%3F=200&limit%3F=400',
 )
 
 # Inspect some attributes of the `requests` repository

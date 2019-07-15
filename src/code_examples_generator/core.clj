@@ -58,8 +58,9 @@
    ["-d" "--dest PATH" "Optional Directory for generated code examples."
     :default "./pot-examples"
     :validate [is-valid-dest? "Not writeable or not a directory!"]]
-   ["-H" "--host HOST" "Required URI host e.g. `pot.org`."
-    :default "pot.org"]
+   ["-H" "--host HOST" "Optional URI host."
+    :default "api.oftrust.net"
+    :validate [is-valid-host? "Host missing or invalid!"]]
    ["-S" "--scheme SCHEME" "Optional URI scheme (`https` or `http`)."
     :default "https"
     :validate [is-valid-scheme? "Invalid scheme. Allowed values are `https`, `http`"]]
