@@ -11,24 +11,25 @@
 ;; ... invalid files etc..
 ;; TODO test that reading invalid folder does not
 ;; ...result in a crash etc.
-(deftest test-get-RAML-files
+(deftest test-get-files
   (testing "empty directory"
-    (is (empty? (get-RAML-files (u/create-temp-dir)))))
+    (is (empty? (get-files (u/create-temp-dir) ".raml"))))
   (testing "a non existing path"
-    (is (empty? (get-RAML-files (u/random-path)))))
+    (is (empty? (get-files (u/random-path) ".raml"))))
   (testing "a single RAML file"
     (let [file (u/create-temp-file ".raml")
-          filenames (map #(.getName %) (get-RAML-files file))]
+          filenames (map #(.getName %) (get-files file ".raml"))]
       (is (= 1 (count filenames)))
       (is (= (.getName file)
              (first filenames)))))
-             
+  
   (testing "multiple `.raml` files from a directory"
-    (let [f1 (u/create-temp-file ".raml")
-          f2 (u/create-temp-file ".raml")
+    (let [suffix ".raml"
+          f1 (u/create-temp-file suffix)
+          f2 (u/create-temp-file suffix)
           f3 (u/create-temp-file ".notAraml")
           path (.getParent f1)
-          files (get-RAML-files path)
+          files (get-files path suffix)
           filenames (map #(.getName %) files)]
       (is (= (.getParent f1) (.getParent f2) (.getParent f3)))
       (is (some #(= %(.getName f1)) filenames))

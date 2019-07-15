@@ -14,15 +14,41 @@
   "Read RAML files from `source`, find all unique HTTP requests and save examples 
    in different languages to `dest` folder defined in `cli-args`."
   [{:keys [source dest] :as cli-args}]
-  (doseq [file (fs/get-RAML-files source)]
-    (doseq [{:keys [ring-request desc]}
-            (get-requests (raml/read-raml file) cli-args)]
-      (let [examples-dir (fs/get-dest cli-args file ring-request)
-            curl (ring-curl/to-curl ring-request)
-            context-map (conj ring-request {:curl curl :desc desc})]
-        (fs/spit-raml-map examples-dir (raml/read-raml file))
-        (fs/save-code-examples examples-dir context-map))))
-  "raml->HTTP")
+  (let [templates (fs/get-templates)
+        suffix ".raml"
+        files (fs/get-files source suffix)
+        files-count (count files)
+        requests (atom 0)
+        examples (atom '())]
+    (printf "Found %s files matching suffix '%s' at %s.\n"
+            files-count
+            suffix
+            source)
+    (doseq [file files]
+      (doseq [{:keys [ring-request desc]}
+              (get-requests (raml/read-raml file) cli-args)]
+        (swap! requests inc)
+        (let [examples-dir (fs/get-dest cli-args file ring-request)
+              curl (ring-curl/to-curl ring-request)
+              context-map (conj ring-request {:curl curl :desc desc})]
+          (fs/spit-raml-map examples-dir (raml/read-raml file))
+          (swap! examples conj (fs/save-code-examples examples-dir templates context-map)))))
+    (let [total-examples (flatten @examples)
+          template-count (count templates)]
+      (printf "Found %s templates (%s) at provided path: %s.\n"
+             template-count
+             (str/join ", " templates)
+             source)
+      (printf "Parsed %s unique requests from %s files. "
+              @requests
+              files-count)
+      (printf "Expecting to generate %s code examples.\n"
+              (* @requests template-count))
+      (newline)
+      (printf "Saved %s code examples in %s different languages:\n"
+              (count total-examples)
+              template-count)
+      (str/join \newline total-examples))))
 
 ;; TODO add test that cli opts must not use any of the ring-request params!?
 (def cli-options
