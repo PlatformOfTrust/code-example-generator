@@ -34,16 +34,22 @@
                            "pot" false})))))
 
 (deftest test-get-ring-request
-  (testing "ring-request keys"
-    (with-redefs [coerce-examples->values (constantly "stub")]
-      (is (= '(:request-method
-               :server-name
-               :scheme
-               :uri
-               :query-string
-               :body
-               :headers)
-             (keys (get-ring-request {} :get "pot.org" "https" "/"))))))
+  (testing "requried ring-request keys are always when proper data has been provided "
+    (is (= '(:request-method
+             :server-name
+             :scheme
+             :uri
+             :query-string
+             :body
+             :headers)
+           (keys (get-ring-request
+                  {:body {:example "test"}
+                   :queryParameters {:t1 {:example 1}}
+                   :headers {:h1 {:example 2}}}
+                  :get
+                  "pot.org"
+                  "https"
+                  "/")))))
   (testing "no empty or nil values"
     (is (= '(:request-method :uri :query-string)
            (keys (get-ring-request {:queryParameters {:test {:example "ok"}}
@@ -55,14 +61,14 @@
         (is (= h (:headers (get-ring-request {:headers h} "" "" "" "")))))))
   (testing "body parameters exist"
     (with-redefs [coerce-examples->values (fn [m] m)]
-      (let [b {:test "body"}]
-        (is (= b (:body (get-ring-request {:body b} "" "" "" "")))))))
+      (let [b {:type "test" :example "this should get displayed"}]
+        (is (= (:example b)
+               (:body (get-ring-request {:body b} "" "" "" "")))))))
   (testing "query parameters should get url encoded"
     (with-redefs [coerce-examples->values (fn [m] m)]                                  
       (let [q {:test "query"}
             r (get-ring-request {:queryParameters q} "" "" "" "")]
         (is (= (form-encode q) (:query-string r)))))))
-;; TODO also test body and headers!
 
 (deftest test-get-methods
   (testing "always return a map"
@@ -87,13 +93,12 @@
     (are [f s] (= clojure.lang.LazySeq (type (get-requests f {} s)))
       {} ""
       nil "pot.org"))
-  (testing "message-api"
+  (testing "requests of message-api"
     (let [requests (->> (get-requests
                          (edn/read-string
                           (slurp "test-resources/message-api.edn"))
                          {:host "" :scheme ""})
                         (map #(:ring-request %)))]
-          
       (is (= 6 (count requests)))
       (is (= '(:post :get :put :delete :post :get)
              (map #(:request-method %) requests)))
@@ -103,4 +108,15 @@
                "/messages/{version}/{id}"
                "/messages/{version}/{id}/read"
                "/messages/{version}/{toIdentity}/list")
-             (map #(:uri %) requests))))))
+             (map #(:uri %) requests)))))
+  (testing "body parameters of broker-api"
+    (let [raml (edn/read-string (slurp "test-resources/broker-api.edn"))
+          requests (->> (get-requests raml {:host "" :scheme ""})
+                        (map #(:ring-request %)))]
+          
+      (is (= (-> requests first :body)
+             (-> raml
+                 (get "/broker/{version}/fetch-data-product")
+                 :post
+                 :body
+                 :example))))))

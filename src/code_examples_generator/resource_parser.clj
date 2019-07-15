@@ -33,7 +33,7 @@
            :scheme scheme
            :uri uri
            :query-string (form-encode (coerce-examples->values queryParameters))
-           :body (coerce-examples->values body)
+           :body (:example body)
            :headers (coerce-examples->values headers)}]
     (into {} (remove (fn [[_ v]] (when-not (keyword? v) (empty? v))) r))))
 
