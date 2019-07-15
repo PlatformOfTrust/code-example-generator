@@ -2,6 +2,7 @@
   (:require
    [clojure.test :refer :all]
    [clojure.edn :as edn]
+   [clojure.string :as str]
    [code-examples-generator.resource-parser :refer :all]
    [code-examples-generator.test-utils :as u]
    [ring.util.codec :refer [form-encode]]))
@@ -15,7 +16,10 @@
     (are [m]  (= (keys m) (keys (coerce-examples->values m)))
       {:X-Pot-1 {}}
       {:X-Pot-1 {} :X-Pot-2 {:X-Pot-3 nil}}
-      {:X-Pot-1 {:example "{:X-Pot-2 {:example 1}}"}}))      
+      {:X-Pot-1 {:example "{:X-Pot-2 {:example 1}}"}}))
+  (testing "value can be a stringified map"
+    (is (= {:test "my-example"}
+           (coerce-examples->values {:test "description: ok\ntype: object\nexample: my-example"}))))
   (testing ":example key values are treated as return values"
     (is (= (vals (coerce-examples->values {:X-Pot-1 {:example "example1"} :X-Pot-2 {:type "String"}}))
            '("example1" nil)))
@@ -86,6 +90,7 @@
       (is (= (sort ok)
              (sort (map #(:request-method (:ring-request %)) m)))))))
 
+;; TODO should maybe move this to integration tests?
 (deftest test-get-requests
   (testing "always returns a sequence"
     (are [f] (= clojure.lang.LazySeq (type (get-requests f {})))
@@ -109,6 +114,17 @@
                "/messages/{version}/{id}/read"
                "/messages/{version}/{toIdentity}/list")
              (map #(:uri %) requests)))))
+  (testing "auth header of message-api"
+    (let [raml (edn/read-string (slurp "test-resources/message-api.edn"))
+          request-headers (->> (get-requests raml {:host "" :scheme ""})
+                               (map #(:ring-request %))
+                               first
+                               :headers)
+          source-headers (-> raml
+                             (get "/messages/{version}")
+                             :post
+                             :headers)]
+      (is (str/includes? source-headers (:Authorization request-headers)))))
   (testing "body parameters of broker-api"
     (let [raml (edn/read-string (slurp "test-resources/broker-api.edn"))
           requests (->> (get-requests raml {:host "" :scheme ""})
