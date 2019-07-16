@@ -17,6 +17,9 @@
       {:X-Pot-1 {}}
       {:X-Pot-1 {} :X-Pot-2 {:X-Pot-3 nil}}
       {:X-Pot-1 {:example "{:X-Pot-2 {:example 1}}"}}))
+  (testing "? identifies an optional parameter and should be removed"
+    (is (= {:test "ok"}
+           (coerce-examples->values {:test? {:example "ok"}}))))
   (testing "value can be a stringified map"
     (is (= {:test "my-example"}
            (coerce-examples->values {:test "description: ok\ntype: object\nexample: my-example"}))))
