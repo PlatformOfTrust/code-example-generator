@@ -9,4 +9,4 @@ response = requests.{{request-method|name}}(
 
 # Inspect some attributes of the `requests` repository
 json_response = response.json()
-print(json_response);
+print({'raw_body': json_response, 'status': response.status_code, 'code': response.status_code})
