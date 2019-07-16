@@ -5,7 +5,7 @@
    [clojure.string :as str]))
 
 
-(defmulti parse-property
+(defmulti parse-val
   "According to RAML spec:
    > RAML parsers MUST parse the content of the file as RAML content and 
    >append the parsed structures to the RAML document node if the included 
@@ -14,7 +14,7 @@
    checks whether input is a string and parses it to a map if needed"
   class)
 
-(defmethod parse-property String
+(defmethod parse-val String
   [s]
   (let [match "example: "
         example (->> (str/split s #"\n")
@@ -22,7 +22,18 @@
                      first)]
     (str/replace-first example (re-pattern match) "")))
 
-(defmethod parse-property :default [m] (:example m))
+(defmethod parse-val :default [m] (:example m))
+
+
+(defn- parse-key
+  "According to RAML spec trailing question mark identifies optional
+   property."
+  [kw]
+  (let [s (name kw)
+        l (count s)]
+    (if (str/ends-with? s"?")
+      (keyword (subs s 0 (- l 1)))
+      kw)))
 
 ;; TODO maybe report that certain values are nil? It will be easier to fix the docs.
 ;; TODO Reporting should be done on higher levels
@@ -31,7 +42,7 @@
   "Parse node and return a map of key-value pairs where key is key and 
    value is taken from `:example`. Not recursive!"
   [m]
-  (into {} (map (fn [[k v]] [k (parse-property v)]) m)))
+  (into {} (map (fn [[k v]] [(parse-key k) (parse-val v)]) m)))
 
 (defn get-resources
   "Returns a sequence of vectors where each one consists of two values:
