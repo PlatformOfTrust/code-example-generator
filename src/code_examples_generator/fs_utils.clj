@@ -24,7 +24,7 @@
   ([]
    (get-templates "templates"))
   ([path]
-   (list "curl", "python.py", "unirest.node.js" "slate.md")))
+   (list "curl" "python.py" "unirest.node.js" "slate.md" "2xx-response.json")))
    ;; (prn path)
    ;; (prn (io/resource path))
    ;; (prn (->> path io/resource .getFile))

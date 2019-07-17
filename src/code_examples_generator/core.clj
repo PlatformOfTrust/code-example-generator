@@ -25,12 +25,12 @@
             suffix
             source)
     (doseq [file files]
-      (doseq [{:keys [ring-request desc]}
+      (doseq [{:keys [ring-request desc ok]}
               (get-requests (raml/read-raml file) cli-args)]
         (swap! requests inc)
         (let [examples-dir (fs/get-dest cli-args file ring-request)
               curl (ring-curl/to-curl ring-request)
-              context-map (conj ring-request {:curl curl :desc desc})]
+              context-map (conj ring-request {:curl curl :desc desc :ok ok})]
           (fs/spit-raml-map examples-dir (raml/read-raml file))
           (swap! examples conj (fs/save-code-examples examples-dir templates context-map)))))
     (let [total-examples (flatten @examples)

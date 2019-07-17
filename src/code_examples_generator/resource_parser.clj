@@ -67,6 +67,17 @@
            :headers (coerce-examples->values headers)}]
     (into {} (remove (fn [[_ v]] (when-not (keyword? v) (empty? v))) r))))
 
+(defn get-2xx-response
+  "Parse response map and look up first 2xx response. Return a map 
+   with keys `status` and `body` containing http response code and
+   example response body." 
+  [m]
+  (->> m
+       (filter (fn [[k _]] (str/starts-with? k "2")))
+       (map (fn [[k v]] {:status (keyword k)
+                         :body (:example (:body v))}))
+       first))
+
 (defn get-methods
   "Parse node and returns a sequence of maps which have the following keys:
    a) `:ring-request` - https://github.com/ring-clojure/ring/blob/master/SPEC
@@ -79,6 +90,7 @@
             (when (contains? http-methods k)
               (assoc {}
                      :ring-request (get-ring-request v k host scheme uri)
+                     :ok (get-2xx-response (:responses v))
                      :desc (:description v)))))
          (remove nil?))))
 
