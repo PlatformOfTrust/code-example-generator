@@ -40,6 +40,20 @@
                            "/pot/{potId}" {:data "is good!"}
                            "pot" false})))))
 
+
+;; TODO also create an integration test
+(deftest test-get-2xx-response
+  (testing "status code is 2xx"
+    (are [m] (str/starts-with? (:status (get-2xx-response m)) ":2")        
+      {"404" {:body {:example "test-404"}}
+       "200" {:body {:example "test-200"}}}
+      {"201" {:body {:example "test-201"}}}))
+  (testing "response body"
+    (is (= "test-200"
+           (:body (get-2xx-response {"404" {:body {:example "test-404"}}
+                                     "200" {:body {:example "test-200"}}}))))
+    (is (= nil (get-2xx-response {})))))
+
 (deftest test-get-ring-request
   (testing "requried ring-request keys are always when proper data has been provided "
     (is (= '(:request-method
@@ -83,7 +97,7 @@
       {} nil))
   (testing "return map structure"
     (let [request (get-methods {:get nil :post nil} {} "")
-          response-keys '(:ring-request  :desc)]
+          response-keys '(:ring-request  :ok :desc)]
       (is (= response-keys (keys (first request))))
       (is (= response-keys (keys (second request))))))
   (testing "valid methods are: GET, PATCH, PUT, POST, DELETE and OPTIONS and HEAD"
