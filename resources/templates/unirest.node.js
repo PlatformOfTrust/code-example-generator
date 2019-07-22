@@ -9,6 +9,3 @@ unirest
     // output response to console as JSON
     console.log(JSON.stringify({ raw_body, status, code }, null, 4));
   })
-
-
-
