@@ -2,6 +2,7 @@
   "Methods for parsing HTTP requests from RAML map."
   (:require
    [ring.util.codec :refer [form-encode]]
+   [cheshire.core :as json]
    [clojure.string :as str]))
 
 
@@ -63,7 +64,7 @@
            :scheme scheme
            :uri uri
            :query-string (form-encode (coerce-examples->values queryParameters))
-           :body (:example body)
+           :body (-> body :example json/parse-string)
            :headers (coerce-examples->values headers)}]
     (into {} (remove (fn [[_ v]] (when-not (keyword? v) (empty? v))) r))))
 

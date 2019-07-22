@@ -5,6 +5,7 @@
    [clojure.string :as str]
    [code-examples-generator.resource-parser :refer :all]
    [code-examples-generator.test-utils :as u]
+   [cheshire.core :as json]
    [ring.util.codec :refer [form-encode]]))
 
 
@@ -55,7 +56,8 @@
     (is (= nil (get-2xx-response {})))))
 
 (deftest test-get-ring-request
-  (testing "requried ring-request keys are always when proper data has been provided "
+  (testing "requried ring-request keys are always present when 
+            proper data has been provided "
     (is (= '(:request-method
              :server-name
              :scheme
@@ -64,7 +66,7 @@
              :body
              :headers)
            (keys (get-ring-request
-                  {:body {:example "test"}
+                  {:body {:example (json/generate-string {:ok "yes"})}
                    :queryParameters {:t1 {:example 1}}
                    :headers {:h1 {:example 2}}}
                   :get
@@ -80,10 +82,10 @@
     (with-redefs [coerce-examples->values (fn [m] m)]
       (let [h {:test "headers"}]
         (is (= h (:headers (get-ring-request {:headers h} "" "" "" "")))))))
-  (testing "body parameters exist"
+  (testing "JSON formatted body parameters exist"
     (with-redefs [coerce-examples->values (fn [m] m)]
-      (let [b {:type "test" :example "this should get displayed"}]
-        (is (= (:example b)
+      (let [b {:type "test" :example (json/generate-string {:ok "yes!"})}]
+        (is (= (json/parse-string (:example b))
                (:body (get-ring-request {:body b} "" "" "" "")))))))
   (testing "query parameters should get url encoded"
     (with-redefs [coerce-examples->values (fn [m] m)]                                  
@@ -152,4 +154,5 @@
                  (get "/broker/{version}/fetch-data-product")
                  :post
                  :body
-                 :example))))))
+                 :example
+                 (json/parse-string)))))))
