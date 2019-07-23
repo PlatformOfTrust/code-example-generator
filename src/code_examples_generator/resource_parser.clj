@@ -54,19 +54,31 @@
   (let [keys (->> m keys (filter #(and (string? %) (str/starts-with? % "/"))) set)]
     (filter (fn [[k _]] (contains? keys k)) m)))
 
+(defn get-headers
+  "Add content type headers if they have been provided and body is present."
+  [headers-map body-map content-type]
+  (let [headers (coerce-examples->values headers-map)]
+    (if (and (not (empty? body-map))
+             (not (nil? content-type))
+             (nil? (:Content-Type headers)))
+      (assoc headers :Content-Type content-type)
+      headers))) 
 
 ;; TODO would it make sense to test them being valid ring requests?
 (defn get-ring-request
   "Return `ring request` https://github.com/ring-clojure/ring/blob/master/SPEC."
-  [{:keys [queryParameters body headers]} method host scheme uri]
-  (let [r {:request-method method
-           :server-name host
-           :scheme scheme
-           :uri uri
-           :query-string (form-encode (coerce-examples->values queryParameters))
-           :body (-> body :example json/parse-string)
-           :headers (coerce-examples->values headers)}]
-    (into {} (remove (fn [[_ v]] (when-not (keyword? v) (empty? v))) r))))
+  ([m method host scheme uri]
+   (get-ring-request m method host scheme uri nil))
+  ([{:keys [queryParameters body headers]} method host scheme uri content-type]
+   (let [data (-> body :example json/parse-string)
+         r {:request-method method
+            :server-name host
+            :scheme scheme
+            :uri uri
+            :query-string (form-encode (coerce-examples->values queryParameters))
+            :body data
+            :headers (get-headers headers data content-type)}]
+     (into {} (remove (fn [[_ v]] (when-not (keyword? v) (empty? v))) r)))))
 
 (defn get-2xx-response
   "Parse response map and look up first 2xx response. Return a map 
@@ -83,14 +95,14 @@
   "Parse node and returns a sequence of maps which have the following keys:
    a) `:ring-request` - https://github.com/ring-clojure/ring/blob/master/SPEC
    b) `:desc` - resource description"
-  [m {:keys [host scheme]} uri]
+  [m {:keys [host scheme]} uri content-type]
   (let [http-methods #{:get :patch :put :post :delete :options :head}]
     (->> m
          (map
           (fn [[k v]]
             (when (contains? http-methods k)
               (assoc {}
-                     :ring-request (get-ring-request v k host scheme uri)
+                     :ring-request (get-ring-request v k host scheme uri content-type)
                      :ok (get-2xx-response (:responses v))
                      :desc (:description v)))))
          (remove nil?))))
@@ -102,11 +114,13 @@
   ([m cli-args]
    (get-requests m cli-args ""))
   ([m cli-args s]
+   (get-requests m cli-args "" (:mediaType m)))
+  ([m cli-args s content-type]
    (flatten
     (map
      (fn [[k v]]
        (let [uri (str s k)
-             methods (get-methods v cli-args uri)
-             requests (get-requests v cli-args uri)]
+             methods (get-methods v cli-args uri content-type)
+             requests (get-requests v cli-args uri content-type)]
          [methods requests]))
      (get-resources m))))) 
