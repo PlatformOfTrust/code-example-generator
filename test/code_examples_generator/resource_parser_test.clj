@@ -95,17 +95,17 @@
 
 (deftest test-get-methods
   (testing "always return a map"
-    (are [f] (= clojure.lang.LazySeq (type (get-methods f {} "")))
+    (are [f] (= clojure.lang.LazySeq (type (get-methods f {} "" nil)))
       {} nil))
   (testing "return map structure"
-    (let [request (get-methods {:get nil :post nil} {} "")
+    (let [request (get-methods {:get nil :post nil} {} "" nil)
           response-keys '(:ring-request  :ok :desc)]
       (is (= response-keys (keys (first request))))
       (is (= response-keys (keys (second request))))))
   (testing "valid methods are: GET, PATCH, PUT, POST, DELETE and OPTIONS and HEAD"
     (let [ok '(:get :patch :put :post :delete :options :head)
           all (conj ok "get" "" nil "/test")
-          m (get-methods (u/create-map all) {:host "" :scheme ""}  "pot.org")]
+          m (get-methods (u/create-map all) {:host "" :scheme ""}  "pot.org" nil)]
       (is (= (sort ok)
              (sort (map #(:request-method (:ring-request %)) m)))))))
 
