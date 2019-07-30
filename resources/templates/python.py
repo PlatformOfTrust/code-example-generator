@@ -7,5 +7,8 @@ response = requests.{{request-method|name}}(
     {% if body %}json=({{body|json|safe}}){% endif %}
 )
 
-json_response = response.json()
-print({'raw_body': json_response, 'status': response.status_code, 'code': response.status_code})
+{% ifequal request-method :delete %}
+print({'raw_body': response.text, 'status': response.status_code, 'code': response.status_code})
+{% else %}
+print({'raw_body': response.json(), 'status': response.status_code, 'code': response.status_code})
+{% endifequal %}
