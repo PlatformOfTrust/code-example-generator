@@ -10,6 +10,24 @@
   (:gen-class))
 
 
+(defn print-info
+  [examples, templates, source, requests, fcount]
+  (let [example-count (count examples)
+        template-count (count templates)]
+    (printf "Found %s templates (%s) at provided path: %s.\n"
+            template-count
+            (str/join ", " templates)
+            source)
+    (printf "Parsed %s unique requests from %s files. "
+            requests
+            fcount)
+    (printf "Expecting to generate %s code examples.\n"
+            (* requests template-count))
+    (newline)
+    (printf "Saved %s code examples in %s different languages:\n"
+            example-count
+            template-count)))
+
 (defn RAML->code-examples
   "Read RAML files from `source`, find all unique HTTP requests and save examples 
    in different languages to `dest` folder defined in `cli-args`."
@@ -17,13 +35,10 @@
   (let [templates (fs/get-templates)
         suffix ".raml"
         files (fs/get-files source suffix)
-        files-count (count files)
+        fcount (count files)
         requests (atom 0)
         examples (atom '())]
-    (printf "Found %s files matching suffix '%s' at %s.\n"
-            files-count
-            suffix
-            source)
+    (printf "Found %s files matching suffix '%s' at %s.\n" fcount suffix source)
     (doseq [file files]
       (doseq [{:keys [ring-request desc ok]}
               (get-requests (raml/read-raml file) cli-args)]
@@ -35,19 +50,7 @@
           (swap! examples conj (fs/save-code-examples examples-dir templates context-map)))))
     (let [total-examples (flatten @examples)
           template-count (count templates)]
-      (printf "Found %s templates (%s) at provided path: %s.\n"
-             template-count
-             (str/join ", " templates)
-             source)
-      (printf "Parsed %s unique requests from %s files. "
-              @requests
-              files-count)
-      (printf "Expecting to generate %s code examples.\n"
-              (* @requests template-count))
-      (newline)
-      (printf "Saved %s code examples in %s different languages:\n"
-              (count total-examples)
-              template-count)
+      (print-info total-examples templates, source @requests fcount)
       (str/join \newline total-examples))))
 
 ;; TODO add test that cli opts must not use any of the ring-request params!?
@@ -64,10 +67,6 @@
    ["-S" "--scheme SCHEME" "Optional URI scheme (`https` or `http`)."
     :default "https"
     :validate [is-valid-scheme? "Invalid scheme. Allowed values are `https`, `http`"]]
-   ;; TODO enable that
-   ;; ["-t" "--templates PATH" "Optional path for custom templates directory. Can be used
-   ;;                           to override built in templates."]
-   ;; ["-c" "--sha SHA1" "Optional git commit hash to show in footer of code examples."]
    ["-h" "--help"]
    ["-v" "--version"]])
 
