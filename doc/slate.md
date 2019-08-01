@@ -3,9 +3,7 @@ import requests
 
 response = requests.get(
     'https://api.oftrust.net/messages/{version}/{id}',
-    
     headers={"Authorization":"Bearer <ACCESS_TOKEN>"},
-    
 )
 
 # Inspect some attributes of the `requests` repository
@@ -24,16 +22,10 @@ const unirest = require("unirest");
 unirest
   .get("https://api.oftrust.net/messages/{version}/{id}")
   .headers({"Authorization":"Bearer <ACCESS_TOKEN>"})
-  
-  
   .then(({raw_body, status, code }) => {
     // output response to console as JSON
     console.log(JSON.stringify({ raw_body, status, code }, null, 4));
   })
-
-
-
-
 ```
 
 ```java
