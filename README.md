@@ -94,6 +94,16 @@ binary (jar file `raml2http.jar`) that will be uploaded to the assets of
 Each tag will create a [release][releases] with tag name and upload jar file 
 with version suffix e.g. `raml2http-v1.0.1.jar`.
 
+## Development flow
+
+1. Create a feature branch. Implement changes. Test.
+2. Bump the version in project.clj
+3. Update [Change Log](./CHANGELOG.md).
+4. Merge feature/bugifix branch to master
+5. Create a [new release](new-release). This will trigger a new build in CI 
+which will upload a new jar file e.g. `raml2http-v1.0.1.jar` to release 
+assests in a few minutes. 
+
 ## Contributing
 
 You might want to...
@@ -110,6 +120,16 @@ lein bikeshed                           # Gives tips for writing better code
 lein ancient                            # Check for outdated dependencies
 lein annotations                        # Display all comment annotations (TODO, FIXME etc.)
 ```
+
+## Acknowledgements/future improvements
+
+This project does not support parsing all the options according to 
+[RAML 1.0 spec](RAML-spec). There are too many nuances and options that did 
+not fit the scope of this project. 
+
+Some examples:
+- This tool currently supports only single examples for responses and Types.
+- ...
 
 ## License
 
@@ -131,3 +151,4 @@ Copyright © 2019 Platform Of Trust
 [releases]: https://github.com/PlatformOfTrust/code-examples-generator/releases
 [validator]: https://github.com/PlatformOfTrust/code-examples-validator
 [docs]: https://github.com/PlatformOfTrust/docs
+[new-release]: https://github.com/PlatformOfTrust/code-examples-generator/releases/new

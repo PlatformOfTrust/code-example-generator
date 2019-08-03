@@ -8,6 +8,17 @@
 
 You can run `java --version` to check if you already have it installed.
 
+### Check out RAML files
+
+`git clone https://github.com/PlatformOfTrust/docs.git .`
+
+The RAML files will be located in `./docs/raml2markdown/src`
+
+If you want to execute code examples locally and without the
+[Code Examples Validator][validator] then you can update `<ACCESS_TOKEN>`
+in `./docs/raml2markdown/src/authorization-headers.yaml`.
+
+
 ### Download jar file
 
 Go to https://github.com/PlatformOfTrust/code-examples-generator/releases and 
@@ -85,10 +96,9 @@ response = requests.{{request-method|name}}(
     '{{scheme}}://{{server-name}}{{uri}}',
     {% if query-string %}params='{{query-string|safe}}',{% endif %}
     {% if headers %}headers={{headers|json|safe|default:"{}"}},{% endif %}
-    {% if body %}data=({{body|json|safe}}){% endif %}
+    {% if body %}json=({{body|json|safe}}){% endif %}
 )
 
-# Inspect some attributes of the `requests` repository
 json_response = response.json()
 print({'raw_body': json_response, 'status': response.status_code, 'code': response.status_code})
 ```
@@ -102,7 +112,6 @@ response = requests.get(
     params='offset%3F=200&limit%3F=400',
 )
 
-# Inspect some attributes of the `requests` repository
 json_response = response.json()
 print(json_response);
 ```
@@ -162,8 +171,9 @@ the following:
 ### slate.md
 
 `slate.md` is a markdown file for [Slate][slate] that combines  all specified 
-code examples, response example and some extra formatting. See [example](./slate.md).
-
+code examples, response example and some extra formatting. 
+See [rendered example](./slate.md) based on the 
+[slate template](../resources/templates/slate.md).
 
 ## Adding, Modifying and removing code examples
 
@@ -186,25 +196,6 @@ Setting up the development environment and running code example generator via
 `lein run` is required for this. Another option is to push changes to github 
 and wait for the ci to build a new jar file.
 
-
-### Overriding templates locally (this feature is not implemented yet!)
-
-It is possible to override templates by providing jar file with custom template 
-source. This will make the code example generator ignore bundled template files 
-and look for templates from user provided path.
-
-```
-# Add new template
-$ echo "{{scheme}}://{{server-name}}{{uri}}" > ./my-templates/unirest.php 
-
-# Run code examples generator
-$ java -jar raml2http.jar -s ./raml-files -d ./code-examples -t ./my-templates -H pot.net
-
-# View saved code example
-$ cat ./code-examples/product-api/product-api.raml/_products_{version}/GET/unirest.php
-https://pot.net/products/{version}
-```
-
 --------------------------------------------------------------------------------
 Copyright © 2019 Platform Of Trust
 
@@ -213,3 +204,4 @@ Copyright © 2019 Platform Of Trust
 [templates]: ../resources/templates
 [slate]: https://github.com/lord/slate
 [pot-docs]: https://github.com/PlatformOfTrust/docs
+[validator]: https://github.com/PlatformOfTrust/code-examples-validator
