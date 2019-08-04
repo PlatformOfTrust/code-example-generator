@@ -20,3 +20,8 @@ pom.xml.asc
 
 # OSX
 .DS_Store
+
+# e2e tests
+node_modules
+package-lock.json
+code-examples

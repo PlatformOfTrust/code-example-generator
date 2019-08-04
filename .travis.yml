@@ -1,10 +1,20 @@
-branches:
-  except:
-  # latest branch is reserved for release tagging
-  - latest
-  
 language: clojure
 
+env:
+  global:
+    # Folder for generated code examples. Used for e2e tests
+    - CODE_EXAMPLES=$TRAVIS_BUILD_DIR/code-examples
+    # Location of RAML files for testing
+    - RAML_FILES=$TRAVIS_BUILD_DIR/test-resources/raml
+    # Scheme for e2e tests
+    - SCHEME=http
+    # Host for e2e tests
+    - HOST=mockbin.org/request
+
+before_install:
+  # nodejs for e2e tests
+  - sudo apt-get install nodejs npm
+  
 install:
   # Install dependencies.
   - lein run
@@ -16,13 +26,16 @@ script:
   # Build binary.
   - lein uberjar
 
-  # Test that binary works.
-  - java -jar target/raml2http.jar
+  # Show version, make sure that the binary works.
+  - java -jar $TRAVIS_BUILD_DIR/target/raml2http.jar --version
 
   # TODO Run integration/acceptance tests
 
-after_success:
-  - echo Seems to work!
+  # Run e2e tests
+  - ./scripts/generate_examples.sh
+  - ./scripts/e2e_tests/nodejs.sh
+  - ./scripts/e2e_tests/python.sh
+  - ./scripts/e2e_tests/curl.sh
 
 before_deploy:
   # add version suffix if TAG or create temporary local tag for deployment

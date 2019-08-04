@@ -69,6 +69,27 @@ has been set as a criteria for successful builds in CI. You can change it in
               :high-watermark 90}
 ```
 
+### e2e tests
+
+You can run generated code examples against [mockbin.org](mockbin.org) to 
+validatate whether examples are semantically correct e.g. there are no typos 
+and code examples are valid examples for their respective languages. 
+
+```
+  sh ./scripts/generate_examples.sh     # Generate code examples
+  npm install unirest                   # Install unirest
+  sh ./scripts/e2e_tests/nodejs.sh      # Test node.js/unirest examples 
+  sh ./scripts/e2e_tests/python.sh      # Test Python examples
+  sh ./scripts/e2e_tests/curl.sh        # Test cURL examples
+```
+
+NB! When running node.js tests locally a path to installed node_modules needs 
+to be provided. This the path where `npm install unirest` was triggered.
+
+`NODE_PATH=/Users/sven/dev/PlatformOfTrust/code-examples-generator/node_modules ./scripts/e2e_tests/nodejs.sh`
+
+
+
 <!-- ### Integration tests -->
 
 <!-- This tool will generate HTTP request examples according to provided (HTTP  -->
@@ -97,10 +118,11 @@ with version suffix e.g. `raml2http-v1.0.1.jar`.
 ## Development flow
 
 1. Create a feature branch. Implement changes. Test.
-2. Bump the version in project.clj
-3. Update [Change Log](./CHANGELOG.md).
-4. Merge feature/bugifix branch to master
-5. Create a [new release](new-release). This will trigger a new build in CI 
+2. Update e2e test if adding new templates (see `.travis.yml`).
+3. Bump the version in project.clj
+4. Update [Change Log](./CHANGELOG.md).
+5. Merge feature/bugifix branch to master
+6. Create a [new release](new-release). This will trigger a new build in CI 
 which will upload a new jar file e.g. `raml2http-v1.0.1.jar` to release 
 assests in a few minutes. 
 
