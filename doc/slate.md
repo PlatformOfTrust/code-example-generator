@@ -1,25 +1,39 @@
 ```python
 import requests
 
+headers={
+    "Authorization":"Bearer <ACCESS_TOKEN>",
+    "Content-Type":"application/json"
+}
+json={
+    "subject":"Go to the grocery store",
+    "content":"Remember to buy milk!"
+}
+
 response = requests.put(
     'https://api.oftrust.net/messages/{version}/{id}',
     
-    headers={"Authorization":"Bearer <ACCESS_TOKEN>","Content-Type":"application/json"},
-    json=({"subject":"Go to the grocery store","content":"Remember to buy milk!"})
+    headers=(headers),
+    json=(json)
 )
 
-json_response = response.json()
-print({'raw_body': json_response, 'status': response.status_code, 'code': response.status_code})
+print({
+    'raw_body': response.json(), 
+    'status': response.status_code, 
+    'code': response.status_code
+})
 
 ```
 
 ```shell
-curl -i \
-    -X PUT \
+curl -i -X PUT \
     -H "Authorization: Bearer <ACCESS_TOKEN>" \
     -H "Content-Type: application/json" \
-    --data-binary "{\"subject\":\"Go to the grocery store\",\"content\":\"Remember to buy milk!\"}" \
-    "https://api.oftrust.net/messages/{version}/{id}"
+    -d \
+"{
+    \"subject\":\"Go to the grocery store\",
+    \"content\":\"Remember to buy milk!\"
+}" "https://api.oftrust.net/messages/{version}/{id}"
 ```
 
 ```javascript
@@ -30,7 +44,7 @@ unirest
   .headers({"Authorization":"Bearer <ACCESS_TOKEN>","Content-Type":"application/json"})
   
   .send({"subject":"Go to the grocery store","content":"Remember to buy milk!"})
-  .then(({raw_body, status, code }) => {
+  .then(({ raw_body, status, code }) => {
     // output response to console as JSON
     console.log(JSON.stringify({ raw_body, status, code }, null, 4));
   })

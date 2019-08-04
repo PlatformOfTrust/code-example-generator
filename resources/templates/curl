@@ -1,1 +1,1 @@
-{{curl|replace:" -v ":" -i "|safe}}
+{{curl|replace:" -v ":" -i "|replace:" --data-binary ":" -d "|safe}}
