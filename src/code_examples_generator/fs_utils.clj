@@ -55,10 +55,25 @@
     (io/make-parents path)
     (spit path (write m :stream nil))))
 
+;; TODO test!
+(defn remove-extra-newlines
+  ""
+  [s]
+  (->> (str/split-lines s)
+       ;; really crude version of replacing the double newlines
+       ;; it relies on indentation.
+       ;; maybe should be if 1 + n spaces?
+       (remove #(or (= "    " %) (= "  " %)))
+       (str/join \newline)))
+
+;; TODO test this rendering and clean-up
 (defn- render-template
   "Render template"
   [file context-map]
-  (selmer/render-file (str "templates/" file) context-map))
+  (-> (str "templates/" file)
+      (selmer/render-file (str "templates/" file)  context-map)
+      (remove-extra-newlines))) 
+
   ;; Selmer template engine reads files relative to ClassLoader URL by default - 
   ;; https://github.com/yogthos/Selmer#resource-path.
   ;; Overwrite resource path to make it possible to read templates from custom
@@ -72,7 +87,8 @@
 ;; TODO implement custom path!
 (defn save-code-examples
   "Read template files, render them with provided `context-map` and save
-   as code examples to path provided as `code-examples-dir`. Return path."
+   as code examples to path provided as `code-examples-dir`. Return list 
+   of paths."
   [examples-dir templates context-map]
   (let [examples (atom '())]
     (doseq [template templates]
