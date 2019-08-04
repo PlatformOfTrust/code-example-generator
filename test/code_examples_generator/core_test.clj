@@ -41,6 +41,22 @@
 ;;                               :dest "./test-doc"})
 ;;         (is (= 6 @counter))))))
 
+;; This is maybe too detailed test?
+;; Ideally it should just check that required data is printed
+;; and that calculations are correct
+(deftest test-print-info
+  (let [lines (atom [])]
+    (with-redefs [printf (fn [& args] (swap! lines conj args))]
+      (print-info ["e1" "e2" "e3"] ["t1" "t2"] "src" 8 4)
+      (is (= (nth @lines 0)
+             '("Found %s templates (%s) at provided path: %s.\n" 2 "t1, t2" "src")))
+      (is (= (nth @lines 1)
+             '("Parsed %s unique requests from %s files. " 8 4)))
+      (is (= (nth @lines 2)
+             '("Expecting to generate %s code examples.\n" 16)))
+      (is (= (nth @lines 3)
+             '("Saved %s code examples in %s different languages:\n" 3 2))))))
+
 (deftest test-validate-args
   (with-redefs [RAML->code-examples (constantly "stub")]
     (testing "displaying help"
