@@ -10,5 +10,3 @@ java -jar $TRAVIS_BUILD_DIR/target/raml2http.jar \
      -d $CODE_EXAMPLES \
      -S $SCHEME \
      -H $HOST
-
-
