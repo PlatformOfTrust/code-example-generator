@@ -3,6 +3,7 @@
   (:require 
    [clojure.string :as str]
    [clojure.pprint :refer [write]]
+   [cheshire.core :as json]
    [clojure.java.io :as io]
    [selmer.parser :as selmer]))
 
@@ -66,13 +67,16 @@
        (remove #(or (= "    " %) (= "  " %)))
        (str/join \newline)))
 
-;; TODO test this rendering and clean-up
-(defn- render-template
-  "Render template"
-  [file context-map]
-  (-> (str "templates/" file)
-      (selmer/render-file (str "templates/" file)  context-map)
-      (remove-extra-newlines))) 
+
+(defn pretty-print
+  ""
+  [m]
+  (let [b (:body m) h (:headers m)]
+    (assoc m
+           :body (json/generate-string b {:pretty true})
+           :headers (json/generate-string h {:pretty true}))))
+        
+  
 
   ;; Selmer template engine reads files relative to ClassLoader URL by default - 
   ;; https://github.com/yogthos/Selmer#resource-path.
@@ -92,8 +96,11 @@
   [examples-dir templates context-map]
   (let [examples (atom '())]
     (doseq [template templates]
-     (let [code-example-path (str examples-dir "/" template #_(.getName template))
-           content (render-template template context-map)]
-       (spit code-example-path content)
+     (let [code-example-path (str examples-dir "/" template)]
+       (->> context-map
+            pretty-print
+            (selmer/render-file (str "templates/" template))
+            remove-extra-newlines
+            (spit code-example-path))
        (swap! examples conj code-example-path)))
     @examples))
