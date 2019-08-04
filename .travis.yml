@@ -32,21 +32,10 @@ script:
   # TODO Run integration/acceptance tests
 
   # Run e2e tests
-  - echo -en "travis_fold:start:1"
   - ./scripts/generate_examples.sh
-  - echo -en "travis_fold:end:1"
-
-  - echo -en "travis_fold:start:2"
   - ./scripts/e2e_tests/nodejs.sh
-  - echo -en "travis_fold:end:2"
-
-  - echo -en "travis_fold:start:3"
   - ./scripts/e2e_tests/python.sh
-  - echo -en "travis_fold:end:3"
-
-  - echo -en "travis_fold:start:4"
   - ./scripts/e2e_tests/curl.sh
-  - echo -en "travis_fold:end:4"
 
 before_deploy:
   # add version suffix if TAG or create temporary local tag for deployment
