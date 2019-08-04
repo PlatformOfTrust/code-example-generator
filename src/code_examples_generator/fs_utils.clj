@@ -69,26 +69,13 @@
 
 
 (defn pretty-print
-  ""
-  [m]
-  (let [b (:body m) h (:headers m)]
-    (assoc m
-           :body (json/generate-string b {:pretty true})
-           :headers (json/generate-string h {:pretty true}))))
-        
-  
+  "TODO"
+  [kw m]
+  (if (empty? (get m kw))
+    m
+    (assoc m kw (json/generate-string (get m kw) {:pretty {:indentation "    "}}))))
+                                                        
 
-  ;; Selmer template engine reads files relative to ClassLoader URL by default - 
-  ;; https://github.com/yogthos/Selmer#resource-path.
-  ;; Overwrite resource path to make it possible to read templates from custom
-  ;; location.
-  ;; (prn "jeees")
-  ;; (prn file)
-  ;; (prn (.getParentFile file))
-  ;; (-> file .getParentFile .getAbsolutePath selmer.parser/set-resource-path!)
-  ;; (selmer/render-file (.getName file) context-map))
-
-;; TODO implement custom path!
 (defn save-code-examples
   "Read template files, render them with provided `context-map` and save
    as code examples to path provided as `code-examples-dir`. Return list 
@@ -98,7 +85,8 @@
     (doseq [template templates]
      (let [code-example-path (str examples-dir "/" template)]
        (->> context-map
-            pretty-print
+            (pretty-print :body)
+            (pretty-print :headers)
             (selmer/render-file (str "templates/" template))
             remove-extra-newlines
             (spit code-example-path))

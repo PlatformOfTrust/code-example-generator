@@ -92,15 +92,26 @@ an code example.
 ```
 import requests
 
+{% if headers %}headers={{headers|safe}},{% endif %}
+{% if body %}json=({{body|safe}}){% endif %}
+
 response = requests.{{request-method|name}}(
     '{{scheme}}://{{server-name}}{{uri}}',
     {% if query-string %}params='{{query-string|safe}}',{% endif %}
-    {% if headers %}headers={{headers|json|safe|default:"{}"}},{% endif %}
-    {% if body %}json=({{body|json|safe}}){% endif %}
+    {% if headers %}headers=headers,{% endif %}
+    {% if body %}json=json{% endif %}
 )
 
-json_response = response.json()
-print({'raw_body': json_response, 'status': response.status_code, 'code': response.status_code})
+print({
+    {% ifequal request-method :delete %}
+    'raw_body': response.text,
+    {% else %}
+    'raw_body': response.json(),
+    {% endifequal %}
+    'status': response.status_code,
+    'code': response.status_code
+})
+
 ```
 
 ### 3. Rendered code example in python.
@@ -108,12 +119,15 @@ print({'raw_body': json_response, 'status': response.status_code, 'code': respon
 import requests
 
 response = requests.get(
-    'https://pot.org/products/{version}',
-    params='offset%3F=200&limit%3F=400',
+    'https://api.oftrust.net/products/{version}',
+    params='offset=200&limit=400',
 )
 
-json_response = response.json()
-print(json_response);
+print({
+    'raw_body': response.json(),
+    'status': response.status_code,
+    'code': response.status_code
+})
 ```
 
 ### 4. Code example location 
@@ -153,8 +167,8 @@ the following:
     "@id": "<Identity ID>",
     "name": "<Identity name>",
     "data": {
-      "key-1": "Value 1",
-      "key-2": "Value 2"
+        "key-1": "Value 1",
+        "key-2": "Value 2"
     },
     "createdBy": "<User ID>",
     "updatedBy": "<User ID>",
