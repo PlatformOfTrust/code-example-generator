@@ -48,9 +48,10 @@
 (defn get-version
   "Get version from project.clj"
   []
-  (->> "project.clj"
-       slurp
-       read-string
-       (drop 2)
-       first
-       (str "v")))
+  (let [snapshot (->> "project.clj"
+                      slurp
+                      read-string
+                      (drop 2)
+                      first
+                      (str "v"))]
+    (str/replace snapshot #"-SNAPSHOT" "")))

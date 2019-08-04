@@ -1,4 +1,4 @@
-(defproject code-examples-generator "1.0.0"
+(defproject code-examples-generator "1.0.0-SNAPSHOT"
   :description "Command line tool that is able to parse Platform of 
                 Trust API documentation and generate code examples 
                 based on provided templates."
