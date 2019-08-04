@@ -6,6 +6,8 @@
    [ring-curl.core :as ring-curl]
    [code-examples-generator.fs-utils :as fs]
    [code-examples-generator.resource-parser :refer [get-requests]]
+   [code-examples-generator.formatters :as f]
+   ;; TODO no :refer :all
    [code-examples-generator.validators :refer :all])
   (:gen-class))
 
@@ -31,7 +33,7 @@
 (defn RAML->code-examples
   "Read RAML files from `source`, find all unique HTTP requests and save examples 
    in different languages to `dest` folder defined in `cli-args`."
-  [{:keys [source dest] :as cli-args}]
+  [{:keys [source dest host scheme] :as cli-args}]
   (let [templates (fs/get-templates)
         suffix ".raml"
         files (fs/get-files source suffix)
@@ -44,8 +46,12 @@
               (get-requests (raml/read-raml file) cli-args)]
         (swap! requests inc)
         (let [examples-dir (fs/get-dest cli-args file ring-request)
-              curl (ring-curl/to-curl ring-request)
-              context-map (conj ring-request {:curl curl :desc desc :ok ok})]
+              curl (ring-curl/to-curl (f/pretty-print ring-request :body))
+              context-map (-> ring-request
+                              (conj {:curl curl :desc desc :ok ok})
+                              (f/pretty-print :body)
+                              (f/pretty-print :headers)
+                              (f/pretty-print-curl :curl))]
           (fs/spit-raml-map examples-dir (raml/read-raml file))
           (swap! examples conj (fs/save-code-examples examples-dir templates context-map)))))
     (let [total-examples (flatten @examples)

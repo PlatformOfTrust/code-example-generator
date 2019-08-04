@@ -1,31 +1,54 @@
 ```python
 import requests
 
-response = requests.get(
+headers={
+    "Authorization":"Bearer <ACCESS_TOKEN>",
+    "Content-Type":"application/json"
+}
+json={
+    "subject":"Go to the grocery store",
+    "content":"Remember to buy milk!"
+}
+
+response = requests.put(
     'https://api.oftrust.net/messages/{version}/{id}',
-    headers={"Authorization":"Bearer <ACCESS_TOKEN>"},
+    
+    headers=(headers),
+    json=(json)
 )
 
-# Inspect some attributes of the `requests` repository
-json_response = response.json()
-print({'raw_body': json_response, 'status': response.status_code, 'code': response.status_code})
+print({
+    'raw_body': response.json(), 
+    'status': response.status_code, 
+    'code': response.status_code
+})
 
 ```
 
 ```shell
-curl -i -X GET -H "Authorization: Bearer <ACCESS_TOKEN>" "https://api.oftrust.net/messages/{version}/{id}"
+curl -i -X PUT \
+    -H "Authorization: Bearer <ACCESS_TOKEN>" \
+    -H "Content-Type: application/json" \
+    -d \
+"{
+    \"subject\":\"Go to the grocery store\",
+    \"content\":\"Remember to buy milk!\"
+}" "https://api.oftrust.net/messages/{version}/{id}"
 ```
 
 ```javascript
 const unirest = require("unirest");
 
 unirest
-  .get("https://api.oftrust.net/messages/{version}/{id}")
-  .headers({"Authorization":"Bearer <ACCESS_TOKEN>"})
-  .then(({raw_body, status, code }) => {
+  .put("https://api.oftrust.net/messages/{version}/{id}")
+  .headers({"Authorization":"Bearer <ACCESS_TOKEN>","Content-Type":"application/json"})
+  
+  .send({"subject":"Go to the grocery store","content":"Remember to buy milk!"})
+  .then(({ raw_body, status, code }) => {
     // output response to console as JSON
     console.log(JSON.stringify({ raw_body, status, code }, null, 4));
   })
+
 ```
 
 ```java

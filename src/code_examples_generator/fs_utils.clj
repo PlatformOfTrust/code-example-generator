@@ -4,7 +4,8 @@
    [clojure.string :as str]
    [clojure.pprint :refer [write]]
    [clojure.java.io :as io]
-   [selmer.parser :as selmer]))
+   [selmer.parser :as selmer]
+   [code-examples-generator.formatters :as f]))
 
 
 ;; TODO test that reading a single file works
@@ -55,29 +56,18 @@
     (io/make-parents path)
     (spit path (write m :stream nil))))
 
-(defn- render-template
-  "Render template"
-  [file context-map]
-  (selmer/render-file (str "templates/" file) context-map))
-  ;; Selmer template engine reads files relative to ClassLoader URL by default - 
-  ;; https://github.com/yogthos/Selmer#resource-path.
-  ;; Overwrite resource path to make it possible to read templates from custom
-  ;; location.
-  ;; (prn "jeees")
-  ;; (prn file)
-  ;; (prn (.getParentFile file))
-  ;; (-> file .getParentFile .getAbsolutePath selmer.parser/set-resource-path!)
-  ;; (selmer/render-file (.getName file) context-map))
 
-;; TODO implement custom path!
 (defn save-code-examples
   "Read template files, render them with provided `context-map` and save
-   as code examples to path provided as `code-examples-dir`. Return path."
+   as code examples to path provided as `code-examples-dir`. Return list 
+   of paths."
   [examples-dir templates context-map]
   (let [examples (atom '())]
     (doseq [template templates]
-     (let [code-example-path (str examples-dir "/" template #_(.getName template))
-           content (render-template template context-map)]
-       (spit code-example-path content)
+     (let [code-example-path (str examples-dir "/" template)]
+       (->> context-map
+            (selmer/render-file (str "templates/" template))
+            f/remove-extra-newlines
+            (spit code-example-path))
        (swap! examples conj code-example-path)))
     @examples))
