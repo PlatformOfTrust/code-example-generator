@@ -6,6 +6,8 @@
    [ring-curl.core :as ring-curl]
    [code-examples-generator.fs-utils :as fs]
    [code-examples-generator.resource-parser :refer [get-requests]]
+   [code-examples-generator.formatters :as f]
+   ;; TODO no :refer :all
    [code-examples-generator.validators :refer :all])
   (:gen-class))
 
@@ -45,7 +47,11 @@
         (swap! requests inc)
         (let [examples-dir (fs/get-dest cli-args file ring-request)
               curl (ring-curl/to-curl ring-request)
-              context-map (conj ring-request {:curl curl :desc desc :ok ok})]
+              context-map (-> ring-request
+                              (conj {:curl curl :desc desc :ok ok})
+                              (f/pretty-print :body)
+                              (f/pretty-print :headers)
+                              (f/pretty-print-curl :curl))]
           (fs/spit-raml-map examples-dir (raml/read-raml file))
           (swap! examples conj (fs/save-code-examples examples-dir templates context-map)))))
     (let [total-examples (flatten @examples)

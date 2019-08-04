@@ -3,9 +3,9 @@
   (:require 
    [clojure.string :as str]
    [clojure.pprint :refer [write]]
-   [cheshire.core :as json]
    [clojure.java.io :as io]
-   [selmer.parser :as selmer]))
+   [selmer.parser :as selmer]
+   [code-examples-generator.formatters :as f]))
 
 
 ;; TODO test that reading a single file works
@@ -56,25 +56,6 @@
     (io/make-parents path)
     (spit path (write m :stream nil))))
 
-;; TODO test!
-(defn remove-extra-newlines
-  ""
-  [s]
-  (->> (str/split-lines s)
-       ;; really crude version of replacing the double newlines
-       ;; it relies on indentation.
-       ;; maybe should be if 1 + n spaces?
-       (remove #(or (= "    " %) (= "  " %)))
-       (str/join \newline)))
-
-
-(defn pretty-print
-  "TODO"
-  [kw m]
-  (if (empty? (get m kw))
-    m
-    (assoc m kw (json/generate-string (get m kw) {:pretty {:indentation "    "}}))))
-                                                        
 
 (defn save-code-examples
   "Read template files, render them with provided `context-map` and save
@@ -85,10 +66,8 @@
     (doseq [template templates]
      (let [code-example-path (str examples-dir "/" template)]
        (->> context-map
-            (pretty-print :body)
-            (pretty-print :headers)
             (selmer/render-file (str "templates/" template))
-            remove-extra-newlines
+            f/remove-extra-newlines
             (spit code-example-path))
        (swap! examples conj code-example-path)))
     @examples))
