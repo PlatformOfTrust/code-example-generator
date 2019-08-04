@@ -46,9 +46,9 @@
     (testing "displaying help"
       (are [args] (= (validate-args args) (:summary (parse-opts args cli-options)))
         nil '() '("-h") '("--help")))
-    (testing "version should be displayed"
-      (are [args] (= "v0.1.0" (validate-args args))
-        '("-v") '("--version") '("-v" "--help")))
+    ;; (testing "version should be displayed"
+    ;;   (are [args] (= "v0.1.0" (validate-args args))
+    ;;     '("-v") '("--version") '("-v" "--help")))
     (testing "missing or incorrect arguments should not trigger code generation"
       (are [args] (not= "stub" (validate-args args))
         '("--blaah") '("-s") '("-d")))
