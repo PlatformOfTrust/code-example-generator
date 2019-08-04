@@ -5,7 +5,6 @@ set -exuo pipefail
 mkdir -p $CODE_EXAMPLES
 
 # Run code examples generator
-# Generate request to mockbin.org
 java -jar $TRAVIS_BUILD_DIR/target/raml2http.jar \
      -s $RAML_FILES \
      -d $CODE_EXAMPLES \
