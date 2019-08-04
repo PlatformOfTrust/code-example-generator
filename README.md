@@ -111,10 +111,11 @@ with version suffix e.g. `raml2http-v1.0.1.jar`.
 ## Development flow
 
 1. Create a feature branch. Implement changes. Test.
-2. Bump the version in project.clj
-3. Update [Change Log](./CHANGELOG.md).
-4. Merge feature/bugifix branch to master
-5. Create a [new release](new-release). This will trigger a new build in CI 
+2. Update e2e test if adding new templates (see `.travis.yml`).
+3. Bump the version in project.clj
+4. Update [Change Log](./CHANGELOG.md).
+5. Merge feature/bugifix branch to master
+6. Create a [new release](new-release). This will trigger a new build in CI 
 which will upload a new jar file e.g. `raml2http-v1.0.1.jar` to release 
 assests in a few minutes. 
 
