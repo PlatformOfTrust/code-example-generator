@@ -69,6 +69,20 @@ has been set as a criteria for successful builds in CI. You can change it in
               :high-watermark 90}
 ```
 
+### e2e tests
+
+You can run generated code examples against [mockbin.org](mockbin.org) to 
+validatate whether examples are semantically correct e.g. there are no typos 
+and code examples are valid examples for their respective languages. 
+
+```
+  sh ./scripts/generate_examples.sh     # Generate code examples
+  npm install unirest                   # Install unirest
+  sh ./scripts/e2e_tests/nodejs.sh      # Test node.js/unirest examples 
+  sh ./scripts/e2e_tests/python.sh      # Test Python examples
+  sh ./scripts/e2e_tests/curl.sh        # Test cURL examples
+```
+
 <!-- ### Integration tests -->
 
 <!-- This tool will generate HTTP request examples according to provided (HTTP  -->
