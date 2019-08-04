@@ -83,6 +83,13 @@ and code examples are valid examples for their respective languages.
   sh ./scripts/e2e_tests/curl.sh        # Test cURL examples
 ```
 
+NB! When running node.js tests locally a path to installed node_modules needs 
+to be provided. This the path where `npm install unirest` was triggered.
+
+`NODE_PATH=/Users/sven/dev/PlatformOfTrust/code-examples-generator/node_modules ./scripts/e2e_tests/nodejs.sh`
+
+
+
 <!-- ### Integration tests -->
 
 <!-- This tool will generate HTTP request examples according to provided (HTTP  -->
