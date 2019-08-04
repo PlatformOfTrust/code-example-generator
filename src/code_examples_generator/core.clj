@@ -85,7 +85,7 @@
   [args]
   (let [{:keys [options summary errors] :as kk} (parse-opts args cli-options)]
     (cond
-      (:version options) "v0.1.0"
+      (:version options) (f/get-version)
       (not (nil? errors)) (str/join \newline errors)
       (or (:help options) (empty? (:source options))) summary 
       :else (RAML->code-examples options))))

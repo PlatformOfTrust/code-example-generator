@@ -45,3 +45,13 @@
                            (append-newline data-str))]
     (assoc m kw formatted-curl)))
     
+(defn get-version
+  "Get version from project.clj"
+  []
+  (let [snapshot (->> "project.clj"
+                      slurp
+                      read-string
+                      (drop 2)
+                      first
+                      (str "v"))]
+    (str/replace snapshot #"-SNAPSHOT" "")))

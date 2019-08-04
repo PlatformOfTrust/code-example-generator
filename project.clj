@@ -1,6 +1,7 @@
-(defproject code-examples-generator "0.1.0-SNAPSHOT"
-  :description "Command line tool that is able to parse Platform of Trust API documentation and 
-                generate HTTP requests based on provided templates."
+(defproject code-examples-generator "1.0.0-SNAPSHOT"
+  :description "Command line tool that is able to parse Platform of 
+                Trust API documentation and generate code examples 
+                based on provided templates."
   :url "https://github.com/PlatformOfTrust/code-examples-generator"
   :license {:name "MIT License"
             :url "https://opensource.org/licenses/MIT"}
