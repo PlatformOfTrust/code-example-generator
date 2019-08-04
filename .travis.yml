@@ -33,9 +33,9 @@ script:
 
   # Run e2e tests
   - ./scripts/generate_examples.sh
-  - scripts/e2e_tests/nodejs.sh
-  - scripts/e2e_tests/python.sh
-  - scripts/e2e_tests/curl.sh
+  - ./scripts/e2e_tests/nodejs.sh
+  - ./scripts/e2e_tests/python.sh
+  - ./scripts/e2e_tests/curl.sh
 
 before_deploy:
   # add version suffix if TAG or create temporary local tag for deployment
