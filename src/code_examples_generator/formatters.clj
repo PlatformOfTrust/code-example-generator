@@ -19,7 +19,7 @@
   [m kw]
   (if (empty? (get m kw))
     m
-    (assoc m kw (json/generate-string (get m kw) {:pretty {:indentation "    "}}))))
+    (update-in m [kw] json/generate-string {:pretty {:indentation "    "}})))
 
 (defn- prepend-newline
   "Match a string w/ preceding whitespace and prepend it with:

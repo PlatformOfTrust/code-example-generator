@@ -33,7 +33,7 @@
   (let [s (name kw)
         l (count s)]
     (if (str/ends-with? s"?")
-      (keyword (subs s 0 (- l 1)))
+      (keyword (subs s 0 (dec l)))
       kw)))
 
 ;; TODO maybe report that certain values are nil? It will be easier to fix the docs.
@@ -58,7 +58,7 @@
   "Add content type headers if they have been provided and body is present."
   [headers-map body-map content-type]
   (let [headers (coerce-examples->values headers-map)]
-    (if (and (not (empty? body-map))
+    (if (and (seq body-map)
              (not (nil? content-type))
              (nil? (:Content-Type headers)))
       (assoc headers :Content-Type content-type)

@@ -1,6 +1,8 @@
 (ns code-examples-generator.validators
   "Validators for command line arguments."
-  (:require [clojure.java.io :as io]))
+  (:require
+   [clojure.java.io :as io]
+   [clojure.string :as str]))
 
 
 (defn is-valid-source?
@@ -21,7 +23,7 @@
 (defn is-valid-host?
   "Must be  string"
   [s]
-  (and (string? s) (not (empty? s))))
+  (and (string? s) (not (str/blank? s))))
 
 (defn is-valid-scheme?
   "Valid schemes are `http` and `https`."

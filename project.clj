@@ -27,9 +27,9 @@
              :trailing-whitespace false
              :blank-lines false}
 
-  ;; :cloverage {:fail-threshold 50
-  ;;             :low-watermark 70
-  ;;             :high-watermark 90}
+  :cloverage {:fail-threshold 50
+              :low-watermark 70
+              :high-watermark 90}
 
   :repl-options {:init-ns code-examples-generator.core}
   :profiles {:uberjar {:omit-source true
