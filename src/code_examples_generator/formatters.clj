@@ -44,14 +44,20 @@
                            (prepend-newline data-str)
                            (append-newline data-str))]
     (assoc m kw formatted-curl)))
-    
+
 (defn get-version
   "Get version from project.clj"
   []
-  (let [snapshot (->> "project.clj"
-                      slurp
-                      read-string
-                      (drop 2)
-                      first
-                      (str "v"))]
-    (str/replace snapshot #"-SNAPSHOT" "")))
+  "v1.0.0")
+
+;; This does not work in uberjar!
+;; (defn get-version
+;;   "Get version from project.clj"
+;;   []
+;;   (let [snapshot (->> "project.clj"
+;;                       slurp
+;;                       read-string
+;;                       (drop 2)
+;;                       first
+;;                       (str "v"))]
+;;     (str/replace snapshot #"-SNAPSHOT" "")))
